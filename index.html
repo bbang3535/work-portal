@@ -1,91 +1,378 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>업무포털</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkHub</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background: #f5f7fb;
-      color: #111827;
+      padding: 0;
+      font-family: "Segoe UI", "Pretendard", Arial, sans-serif;
     }
 
-    header {
-      background: #2563eb;
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, #dbeafe 0, transparent 30%),
+        radial-gradient(circle at bottom right, #ede9fe 0, transparent 35%),
+        #f5f7fb;
+      color: #0f172a;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      padding: 24px 18px;
+      background: rgba(15, 23, 42, 0.88);
       color: white;
-      padding: 40px;
-      text-align: center;
+      backdrop-filter: blur(20px);
     }
 
-    section {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 34px;
     }
 
-    .menu {
+    .logo span {
+      color: #60a5fa;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 14px;
+      margin-bottom: 8px;
+      border-radius: 14px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .nav a.active,
+    .nav a:hover {
+      background: rgba(96, 165, 250, 0.18);
+      color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .search {
+      width: 420px;
+      padding: 13px 18px;
+      border: 1px solid #dbe3ef;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.8);
+      outline: none;
+    }
+
+    .user {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: white;
+      box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .hero {
+      padding: 34px;
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(37,99,235,0.92), rgba(124,58,237,0.82)),
+        url("");
+      color: white;
+      box-shadow: 0 20px 50px rgba(37,99,235,0.22);
+      margin-bottom: 26px;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #dbeafe;
+      font-size: 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin: 28px 0 16px;
+    }
+
+    .cards {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
     }
 
     .card {
-      background: white;
-      padding: 30px;
+      background: rgba(255,255,255,0.84);
+      border: 1px solid rgba(226,232,240,0.9);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 14px 34px rgba(15,23,42,0.08);
+      transition: 0.25s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 50px rgba(15,23,42,0.14);
+    }
+
+    .icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      background: #eff6ff;
+      font-size: 24px;
+      margin-bottom: 18px;
     }
 
-    .card h2 {
-      margin-top: 0;
+    .card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
     }
 
-    button {
+    .card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    .card button {
+      border: none;
       background: #2563eb;
       color: white;
-      border: none;
-      padding: 12px 18px;
-      border-radius: 8px;
+      padding: 9px 14px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.86);
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 14px 34px rgba(15,23,42,0.07);
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .status-box {
+      padding: 16px;
+      border-radius: 18px;
+      background: #f8fafc;
+    }
+
+    .status-box strong {
+      display: block;
+      font-size: 24px;
+      margin-top: 6px;
+    }
+
+    .list {
+      margin-top: 14px;
+    }
+
+    .list li {
+      list-style: none;
+      padding: 13px 0;
+      border-bottom: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    @media (max-width: 1100px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .search {
+        width: 100%;
+      }
+
+      .topbar {
+        gap: 14px;
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .hero h1 {
+        font-size: 26px;
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">Work<span>Hub</span></div>
 
-<header>
-  <h1>업무포털</h1>
-  <p>자주 사용하는 업무 기능을 한곳에서 관리합니다.</p>
-</header>
+      <nav class="nav">
+        <a href="#" class="active">🏠 홈</a>
+        <a href="#">🤖 자동화</a>
+        <a href="#">🗺 지도</a>
+        <a href="#">📄 문서</a>
+        <a href="#">📊 대시보드</a>
+        <a href="#">📥 다운로드</a>
+        <a href="#">📞 연락처</a>
+        <a href="#">⚙ 설정</a>
+      </nav>
+    </aside>
 
-<section>
-  <div class="menu">
-    <div class="card">
-      <h2>주소 지도 표시</h2>
-      <p>주소를 입력하면 지도에 위치를 표시합니다.</p>
-      <button>열기</button>
-    </div>
+    <main class="main">
+      <div class="topbar">
+        <input class="search" type="text" placeholder="도구 검색하기  예) 사진첩, 지도, 공문" />
+        <div class="user">👤 bbitt</div>
+      </div>
 
-    <div class="card">
-      <h2>사진첩 자동 생성</h2>
-      <p>전산화번호 기준으로 사진첩을 생성합니다.</p>
-      <button>준비중</button>
-    </div>
+      <section class="hero">
+        <h1>안녕하세요, bbitt님 👋</h1>
+        <p>반복되는 업무를 더 빠르고 정확하게 처리하세요.</p>
+      </section>
 
-    <div class="card">
-      <h2>업무양식 다운로드</h2>
-      <p>협의확인서, 공문, 사진대지 양식을 내려받습니다.</p>
-      <button>다운로드</button>
-    </div>
+      <h2 class="section-title">자주 사용하는 기능</h2>
 
-    <div class="card">
-      <h2>프로그램 다운로드</h2>
-      <p>업무용 실행파일을 내려받습니다.</p>
-      <button>다운로드</button>
-    </div>
+      <section class="cards">
+        <div class="card">
+          <div class="icon">📷</div>
+          <h3>사진첩 자동 생성</h3>
+          <p>전산화번호 기준으로 필요한 행과 사진을 추출합니다.</p>
+          <button>실행하기</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">🗺</div>
+          <h3>주소 지도 표시</h3>
+          <p>주소를 입력하면 지도에 위치를 자동으로 표시합니다.</p>
+          <button>실행하기</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">📄</div>
+          <h3>공문 자동 작성</h3>
+          <p>반복되는 공문 문구를 빠르게 작성합니다.</p>
+          <button>실행하기</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">📞</div>
+          <h3>시공사 연락처</h3>
+          <p>협력사 및 시공사 연락처를 검색합니다.</p>
+          <button>실행하기</button>
+        </div>
+      </section>
+
+      <section class="dashboard">
+        <div class="panel">
+          <h2>오늘의 현황</h2>
+
+          <div class="status">
+            <div class="status-box">
+              전체 작업
+              <strong>15</strong>
+            </div>
+            <div class="status-box">
+              진행중
+              <strong>8</strong>
+            </div>
+            <div class="status-box">
+              미처리
+              <strong>2</strong>
+            </div>
+            <div class="status-box">
+              완료
+              <strong>5</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>공지사항</h2>
+          <ul class="list">
+            <li>시스템 점검 안내</li>
+            <li>신규 기능 업데이트 예정</li>
+            <li>여름철 안전 작업 안내</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="dashboard">
+        <div class="panel">
+          <h2>최근 실행</h2>
+          <ul class="list">
+            <li>📷 사진첩 자동 생성</li>
+            <li>🗺 주소 지도 표시</li>
+            <li>📄 공문 자동 작성</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h2>바로가기</h2>
+          <ul class="list">
+            <li>📁 업무양식 다운로드</li>
+            <li>📥 프로그램 다운로드</li>
+            <li>📞 연락처 관리</li>
+          </ul>
+        </div>
+      </section>
+    </main>
   </div>
-</section>
-
 </body>
 </html>
