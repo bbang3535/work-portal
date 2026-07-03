@@ -48,8 +48,55 @@
     .place-info { color: #64748b; font-size: 13px; line-height: 1.5; }
     .badge { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 999px; background: #ef4444; color: white; font-size: 13px; font-weight: 900; margin-right: 8px; }
 
-    .roadview-card { margin-top: 18px; }
-    #roadview { width: 100%; height: 380px; border-radius: 20px; background: #f1f5f9; overflow: hidden; }
+    .roadview-card {
+      margin-top: 18px;
+      display: none;
+    }
+
+    .roadview-card.show {
+      display: block;
+    }
+
+    .roadview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .roadview-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .roadview-actions button {
+      padding: 9px 13px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    #roadview {
+      width: 100%;
+      height: 520px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .roadview-fullscreen {
+      position: fixed;
+      inset: 20px;
+      z-index: 9999;
+      display: block !important;
+      background: white;
+      padding: 20px;
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.35);
+    }
+
+    .roadview-fullscreen #roadview {
+      height: calc(100vh - 110px);
+    }
     .empty { padding: 30px; color: #64748b; text-align: center; background: #f8fafc; border-radius: 18px; line-height: 1.6; }
     .error { color: #ef4444; font-size: 13px; margin-top: 10px; }
     .ok { color: #2563eb; font-size: 13px; margin-top: 10px; font-weight: 700; }
@@ -114,8 +161,14 @@
       </aside>
     </section>
 
-    <section class="roadview-card">
-      <h2>로드뷰</h2>
+    <section class="roadview-card" id="roadviewCard">
+      <div class="roadview-header">
+        <h2>로드뷰</h2>
+        <div class="roadview-actions">
+          <button class="secondary" onclick="toggleRoadview()">숨기기</button>
+          <button class="primary" onclick="toggleRoadviewFullscreen()">전체화면</button>
+        </div>
+      </div>
       <div id="roadview"></div>
     </section>
   </div>
@@ -308,8 +361,11 @@
 
       roadviewClient.getNearestPanoId(place.coords, 80, function (panoId) {
         if (panoId) {
+          showRoadviewPanel();
           roadview.setPanoId(panoId, place.coords);
+          setTimeout(() => roadview.relayout(), 100);
         } else {
+          showRoadviewPanel();
           document.getElementById("roadview").innerHTML =
             '<div class="empty">해당 위치 주변의 로드뷰를 찾지 못했습니다.</div>';
         }
@@ -398,6 +454,28 @@
 
       const c = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
       return R * c;
+    }
+
+
+    function showRoadviewPanel() {
+      document.getElementById("roadviewCard").classList.add("show");
+    }
+
+    function toggleRoadview() {
+      const card = document.getElementById("roadviewCard");
+      card.classList.remove("show");
+      card.classList.remove("roadview-fullscreen");
+    }
+
+    function toggleRoadviewFullscreen() {
+      const card = document.getElementById("roadviewCard");
+      card.classList.toggle("roadview-fullscreen");
+
+      setTimeout(() => {
+        if (roadview) {
+          roadview.relayout();
+        }
+      }, 100);
     }
 
     function toRad(value) {
