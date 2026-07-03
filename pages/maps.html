@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BBITT LAB · 주소 지도 표시</title>
+
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=121dcea468877b10f1ca79a639c94bd4&libraries=services"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", "Pretendard", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #eef3fb;
+      color: #111827;
+    }
+
+    .page {
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .brand span {
+      color: #2563eb;
+    }
+
+    .back {
+      text-decoration: none;
+      background: #111827;
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      border-radius: 28px;
+      padding: 32px;
+      margin-bottom: 22px;
+      box-shadow: 0 20px 50px rgba(37, 99, 235, 0.22);
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #dbeafe;
+      line-height: 1.6;
+    }
+
+    .input-panel {
+      background: white;
+      border-radius: 26px;
+      padding: 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      border: 1px solid #dbe3ef;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 15px;
+      line-height: 1.6;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      align-items: center;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .secondary {
+      background: #eef3fb;
+      color: #1e293b;
+    }
+
+    .hint {
+      color: #64748b;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .map-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 18px;
+    }
+
+    .map-card,
+    .list-card,
+    .roadview-card {
+      background: white;
+      border-radius: 26px;
+      padding: 18px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+    }
+
+    #map {
+      width: 100%;
+      height: 560px;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .list-card h2,
+    .roadview-card h2 {
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .count {
+      color: #2563eb;
+      font-weight: 900;
+    }
+
+    .place-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .place-item {
+      border: 1px solid #e5eaf3;
+      border-radius: 18px;
+      padding: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+      background: #f8fafc;
+    }
+
+    .place-item:hover {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      transform: translateY(-2px);
+    }
+
+    .place-title {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .place-info {
+      color: #64748b;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: #2563eb;
+      color: white;
+      font-size: 13px;
+      font-weight: 900;
+      margin-right: 8px;
+    }
+
+    .roadview-card {
+      margin-top: 18px;
+    }
+
+    #roadview {
+      width: 100%;
+      height: 380px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .empty {
+      padding: 30px;
+      color: #64748b;
+      text-align: center;
+      background: #f8fafc;
+      border-radius: 18px;
+      line-height: 1.6;
+    }
+
+    .error {
+      color: #ef4444;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 1100px) {
+      .input-grid,
+      .map-layout {
+        grid-template-columns: 1fr;
+      }
+
+      #map {
+        height: 460px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="brand">BBITT <span>LAB</span></div>
+      <a class="back" href="../index.html">← 홈으로</a>
+    </header>
+
+    <section class="hero">
+      <h1>주소 지도 표시</h1>
+      <p>
+        여러 주소를 한 번에 입력하면 지도에 번호 마커를 표시합니다.<br />
+        목록이나 마커를 클릭하면 해당 위치로 이동하고 로드뷰를 확인할 수 있습니다.
+      </p>
+    </section>
+
+    <section class="input-panel">
+      <div class="input-grid">
+        <div>
+          <label for="addressInput">주소</label>
+          <textarea id="addressInput" placeholder="예)
+서울특별시 중구 세종대로 110
+서울특별시 강서구 공항대로 411
+서울특별시 영등포구 당산로 123"></textarea>
+        </div>
+
+        <div>
+          <label for="memoInput">추가 정보</label>
+          <textarea id="memoInput" placeholder="예)
+서울시청 인근 작업지
+강서구청 인근 작업지
+영등포구청 인근 작업지"></textarea>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" onclick="showAddresses()">지도에 표시</button>
+        <button class="secondary" onclick="resetMap()">초기화</button>
+        <span class="hint">주소와 추가 정보는 줄 단위로 서로 매칭됩니다.</span>
+      </div>
+
+      <div id="message"></div>
+    </section>
+
+    <section class="map-layout">
+      <div class="map-card">
+        <div id="map"></div>
+      </div>
+
+      <aside class="list-card">
+        <h2>위치 목록 <span class="count" id="count">0</span></h2>
+        <div id="placeList" class="place-list">
+          <div class="empty">주소를 입력하고 지도에 표시를 눌러주세요.</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="roadview-card">
+      <h2>로드뷰</h2>
+      <div id="roadview"></div>
+    </section>
+  </div>
+
+  <script>
+    let map;
+    let geocoder;
+    let bounds;
+    let markers = [];
+    let places = [];
+    let roadview;
+    let roadviewClient;
+
+    window.onload = function () {
+      const mapContainer = document.getElementById("map");
+      const mapOption = {
+        center: new kakao.maps.LatLng(37.5665, 126.9780),
+        level: 8
+      };
+
+      map = new kakao.maps.Map(mapContainer, mapOption);
+      geocoder = new kakao.maps.services.Geocoder();
+      bounds = new kakao.maps.LatLngBounds();
+
+      roadview = new kakao.maps.Roadview(document.getElementById("roadview"));
+      roadviewClient = new kakao.maps.RoadviewClient();
+    };
+
+    function getLines(id) {
+      return document.getElementById(id).value
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v.length > 0);
+    }
+
+    function showMessage(text, isError = false) {
+      const msg = document.getElementById("message");
+      msg.className = isError ? "error" : "";
+      msg.textContent = text;
+    }
+
+    function clearMarkers() {
+      markers.forEach(marker => marker.setMap(null));
+      markers = [];
+      places = [];
+      bounds = new kakao.maps.LatLngBounds();
+    }
+
+    function resetMap() {
+      clearMarkers();
+      document.getElementById("addressInput").value = "";
+      document.getElementById("memoInput").value = "";
+      document.getElementById("count").textContent = "0";
+      document.getElementById("placeList").innerHTML =
+        '<div class="empty">주소를 입력하고 지도에 표시를 눌러주세요.</div>';
+      showMessage("");
+      map.setCenter(new kakao.maps.LatLng(37.5665, 126.9780));
+      map.setLevel(8);
+    }
+
+    function showAddresses() {
+      clearMarkers();
+
+      const addresses = getLines("addressInput");
+      const memos = getLines("memoInput");
+
+      if (addresses.length === 0) {
+        showMessage("주소를 1개 이상 입력해주세요.", true);
+        return;
+      }
+
+      document.getElementById("placeList").innerHTML = "";
+      document.getElementById("count").textContent = "0";
+      showMessage("주소를 검색하고 있습니다...");
+
+      let completed = 0;
+      let successCount = 0;
+
+      addresses.forEach((address, index) => {
+        geocoder.addressSearch(address, function (result, status) {
+          completed++;
+
+          if (status === kakao.maps.services.Status.OK) {
+            const lat = result[0].y;
+            const lng = result[0].x;
+            const coords = new kakao.maps.LatLng(lat, lng);
+            const memo = memos[index] || "";
+
+            const marker = createNumberMarker(coords, index + 1);
+            markers.push(marker);
+            bounds.extend(coords);
+
+            const place = {
+              index: index + 1,
+              address,
+              memo,
+              coords,
+              lat,
+              lng
+            };
+
+            places.push(place);
+            addPlaceItem(place);
+            successCount++;
+
+            kakao.maps.event.addListener(marker, "click", function () {
+              focusPlace(place);
+            });
+          } else {
+            addFailItem(index + 1, address);
+          }
+
+          if (completed === addresses.length) {
+            if (successCount > 0) {
+              map.setBounds(bounds);
+              document.getElementById("count").textContent = successCount;
+              showMessage(`${successCount}개 위치를 지도에 표시했습니다.`);
+              focusPlace(places[0]);
+            } else {
+              showMessage("검색된 주소가 없습니다. 주소를 다시 확인해주세요.", true);
+            }
+          }
+        });
+      });
+    }
+
+    function createNumberMarker(position, number) {
+      const content = `
+        <div style="
+          width:34px;
+          height:34px;
+          border-radius:50%;
+          background:#2563eb;
+          color:white;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-weight:900;
+          border:3px solid white;
+          box-shadow:0 6px 16px rgba(0,0,0,.25);
+        ">
+          ${number}
+        </div>
+      `;
+
+      const marker = new kakao.maps.CustomOverlay({
+        position,
+        content,
+        yAnchor: 1
+      });
+
+      marker.setMap(map);
+      return marker;
+    }
+
+    function addPlaceItem(place) {
+      const list = document.getElementById("placeList");
+
+      const item = document.createElement("div");
+      item.className = "place-item";
+      item.innerHTML = `
+        <div class="place-title">
+          <span class="badge">${place.index}</span>${place.address}
+        </div>
+        <div class="place-info">
+          ${place.memo ? place.memo + "<br>" : ""}
+          위도 ${Number(place.lat).toFixed(6)} · 경도 ${Number(place.lng).toFixed(6)}
+        </div>
+      `;
+
+      item.onclick = function () {
+        focusPlace(place);
+      };
+
+      list.appendChild(item);
+    }
+
+    function addFailItem(index, address) {
+      const list = document.getElementById("placeList");
+
+      const item = document.createElement("div");
+      item.className = "place-item";
+      item.innerHTML = `
+        <div class="place-title">
+          <span class="badge" style="background:#ef4444;">${index}</span>${address}
+        </div>
+        <div class="place-info">주소를 찾지 못했습니다.</div>
+      `;
+
+      list.appendChild(item);
+    }
+
+    function focusPlace(place) {
+      map.panTo(place.coords);
+      map.setLevel(4);
+
+      roadviewClient.getNearestPanoId(place.coords, 80, function (panoId) {
+        if (panoId) {
+          roadview.setPanoId(panoId, place.coords);
+        } else {
+          document.getElementById("roadview").innerHTML =
+            '<div class="empty">해당 위치 주변의 로드뷰를 찾지 못했습니다.</div>';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
