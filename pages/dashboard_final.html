@@ -810,21 +810,19 @@
     }
 
     function setFileList(id, files) {
-      const el = document.getElementById(id);
-      el.innerHTML = "";
-      files.slice(0, 6).forEach(file => {
-        const chip = document.createElement("div");
-        chip.className = "file-chip";
-        chip.innerHTML = `<span>${escapeHtml(file.name)}</span><b>${formatBytes(file.size)}</b>`;
-        el.appendChild(chip);
-      });
-      if (files.length > 6) {
-        const chip = document.createElement("div");
-        chip.className = "file-chip";
-        chip.innerHTML = `<span>외 ${files.length - 6}개 파일</span>`;
-        el.appendChild(chip);
-      }
-    }
+  const el = document.getElementById(id);
+  el.innerHTML = "";
+
+  files.forEach((file, index) => {
+    const chip = document.createElement("div");
+    chip.className = "file-chip";
+    chip.innerHTML = `
+      <span>${index + 1}. ${escapeHtml(file.name)}</span>
+      <b>${formatBytes(file.size)}</b>
+    `;
+    el.appendChild(chip);
+  });
+}
 
     function readExcelFile(file) {
       return new Promise((resolve, reject) => {
