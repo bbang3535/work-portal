@@ -188,13 +188,20 @@ async function parseSiteFile(file){const wb=await readWorkbook(file);let rows=[]
 async function parseCheckFile(file){const wb=await readWorkbook(file);let rows=[];for(const sh of wb.SheetNames){const arr=XLSX.utils.sheet_to_json(wb.Sheets[sh],{header:1,defval:'',raw:false,dateNF:'yyyy-mm-dd hh:mm:ss'});const parsed=parseTable(arr);rows.push(...parsed.map(r=>normalCheck(r,file.name)));}return rows.filter(r=>r.id&&r.date);
 }
 function parseTable(arr){let headerIdx=arr.findIndex(row=>row.some(v=>String(v).trim()==='관리번호'));if(headerIdx<0)headerIdx=0;const headers=arr[headerIdx].map(h=>String(h).trim());return arr.slice(headerIdx+1).filter(row=>row.some(v=>String(v).trim()!=='')).map(row=>{const o={};headers.forEach((h,i)=>{if(h)o[h]=row[i];});return o;});}
-function pick(o,names){for(const n of names){const k=Object.keys(o).find(k=>k.replace(/\s/g,'').includes(n.replace(/\s/g,'')));if(k)return o[k];}return '';}
+function normalizeHeader(v){return String(v??'').replace(/\s/g,'').trim();}
+function pickExact(o,names){const keys=Object.keys(o);for(const n of names){const target=normalizeHeader(n);const k=keys.find(key=>normalizeHeader(key)===target);if(k!==undefined)return o[k];}return '';}
+function pick(o,names){const exact=pickExact(o,names);if(exact!==''&&exact!==undefined&&exact!==null)return exact;for(const n of names){const target=normalizeHeader(n);const k=Object.keys(o).find(key=>normalizeHeader(key).includes(target));if(k)return o[k];}return '';}
 function normalSite(r,source){const name=String(pick(r,['공사장명'])||'').trim();return {source,id:String(pick(r,['관리번호'])||'').trim(),name,team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),status:String(pick(r,['진행상태'])||''),address:String(pick(r,['공사장주소','주소'])||''),manager:String(pick(r,['담당자'])||''),type:String(pick(r,['공사종류'])||'')};}
-function normalCheck(r,source){const rawType=String(pick(r,['구분','점검유형','점검 구분','점검종류'])||'').trim();const date=parseDate(pick(r,['점검종료시간','점검시작시간','점검일시','점검일','굴착등록일','공사장등록일']));return {source,id:String(pick(r,['관리번호'])||'').trim(),name:String(pick(r,['공사장명'])||'').trim(),team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),type:normalizeCheckType(rawType),rawType,person:String(pick(r,['점검자/입회자','점검자','입회자','책임입회자'])||'').trim(),date,address:String(pick(r,['주소'])||'')};}
+function normalCheck(r,source){
+  // '구분' 열은 '공사구분'과 이름이 겹치므로 반드시 정확히 일치하는 헤더를 우선 사용합니다.
+  const rawType=String(pickExact(r,['구분','점검유형','점검 구분','점검종류'])||pick(r,['점검유형','점검 구분','점검종류'])||'').trim();
+  const date=parseDate(pick(r,['점검종료시간','점검시작시간','점검일시','점검일','굴착등록일','공사장등록일']));
+  return {source,id:String(pick(r,['관리번호'])||'').trim(),name:String(pick(r,['공사장명'])||'').trim(),team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),type:normalizeCheckType(rawType),rawType,person:String(pick(r,['점검자/입회자','점검자','입회자','책임입회자'])||'').trim(),date,address:String(pick(r,['주소'])||'')};
+}
 function parseDate(v){if(!v)return null;if(v instanceof Date&&!isNaN(v))return v;let s=String(v).trim();let m=s.match(/(\d{4})[-.\/년 ]\s*(\d{1,2})[-.\/월 ]\s*(\d{1,2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3]);return null;}
 function normalizeTeam(v){const s=String(v||'');if(s.includes('강서'))return '강서선로팀';if(s.includes('목동'))return '목동선로팀';if(s.includes('영등포'))return '영등포선로팀';return s.trim();}
 function normalizeGrade(v){const s=String(v||'').trim().toUpperCase();if(s.includes('특'))return '특급';if(s==='A'||s.includes('A'))return 'A';if(s==='B'||s.includes('B'))return 'B';if(s==='C'||s.includes('C'))return 'C';return s||'미지정';}
-function normalizeCheckType(v){const s=String(v||'').replace(/\s/g,'');if(/관리자/.test(s))return '관리자점검';if(/책임입회|현장입회|입회/.test(s))return '입회';if(/순회/.test(s))return '순회';return '순회';}
+function normalizeCheckType(v){const s=String(v||'').replace(/\s/g,'');if(/관리자/.test(s))return '관리자점검';if(/책임입회|현장입회|입회/.test(s))return '입회';if(/순회/.test(s))return '순회';return '기타';}
 function inDateRange(d){if(!d)return false;const s=new Date(startDate.value+'T00:00:00');const e=new Date(endDate.value+'T23:59:59');return d>=s&&d<=e;}
 function dedupeSites(sites){const map=new Map();sites.forEach(s=>{if(!map.has(s.id))map.set(s.id,s);});return [...map.values()];}
 
