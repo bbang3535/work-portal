@@ -33,6 +33,18 @@
     .manager-card{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.mgr{background:#fff;border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:0 10px 28px rgba(15,23,42,.06)}.mgr .role{font-size:12px;color:#64748b;font-weight:900}.mgr .nm{font-weight:950;margin-top:5px;font-size:18px}.mgr .num{font-size:30px;font-weight:950;margin-top:10px}.mgr.ok{border-color:#bbf7d0;background:linear-gradient(180deg,#f0fdf4,#fff)}.mgr.fail{border-color:#fecaca;background:linear-gradient(180deg,#fff7f7,#fff)}.mgr-target{margin-top:8px;font-size:12px;color:#475569;line-height:1.45;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:9px 10px}.mgr-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.mgr-total{font-size:26px;font-weight:950;letter-spacing:-.03em}.mgr-grade-table{width:100%;border-collapse:separate;border-spacing:0 7px;margin-top:12px}.mgr-grade-table th{font-size:11px;color:#64748b;text-align:left;padding:0 6px}.mgr-grade-table td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px 6px;font-size:12px}.mgr-grade-table td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px;font-weight:950}.mgr-grade-table td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}.mgr-grade-table .oktxt{color:#047857;font-weight:950}.mgr-grade-table .failtxt{color:#b91c1c;font-weight:950}.mgr-grade-table .emptytxt{color:#94a3b8;font-weight:900}.mgr-mini-week{display:flex;gap:4px}.mgr-day{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;font-size:10px;font-weight:950;background:#f1f5f9;color:#94a3b8}.mgr-day.on{background:#dbeafe;color:#1d4ed8}.mgr-day.hot{background:#ede9fe;color:#6d28d9}.mgr-note{margin-top:10px;color:#64748b;font-size:11px;line-height:1.45}.mgr-detail{margin-top:12px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:16px;padding:10px;max-height:310px;overflow:auto}.mgr-detail-title{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:950;color:#334155;margin-bottom:8px}.mgr-target-table{width:100%;border-collapse:separate;border-spacing:0 6px}.mgr-target-table th{position:sticky;top:0;background:rgba(248,250,252,.96);z-index:1;font-size:10px;color:#64748b;text-align:left;padding:6px}.mgr-target-table td{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px 6px;font-size:11px;vertical-align:middle}.mgr-target-table td:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px;font-weight:900}.mgr-target-table td:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}.mgr-target-table .site-short{font-weight:950;color:#0f172a;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mgr-target-table .id-mini{font-size:10px;color:#94a3b8;margin-top:2px}.mgr-target-table .miss{color:#b91c1c;font-weight:950}.mgr-target-table .pass{color:#047857;font-weight:950}.mgr-target-table .warn{color:#c2410c;font-weight:950}.mgr-row-bad td{background:#fff7f7}.mgr-row-good td{background:#f7fff9}.mgr-grade-pill{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:22px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-weight:950;font-size:11px}.mgr-grade-pill.special{background:#fef3c7;color:#92400e}.mgr-more{font-size:11px;color:#64748b;margin-top:6px;line-height:1.4}
     .insight{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.insight .item{background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:14px}.insight b{display:block;font-size:13px;margin-bottom:6px}.insight p{font-size:12px;color:#64748b;line-height:1.45}.toast{position:fixed;right:24px;bottom:24px;background:#111827;color:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 18px 40px rgba(15,23,42,.25);font-weight:900;display:none;z-index:99}.toast.show{display:block;animation:pop .2s ease}.loader{display:none;align-items:center;gap:10px;color:#1d4ed8;font-weight:950}.loader.show{display:flex}.spin{width:18px;height:18px;border-radius:50%;border:3px solid #bfdbfe;border-top-color:#2563eb;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
     .empty-state{padding:44px 20px;text-align:center;color:#94a3b8;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:22px}.empty-state b{display:block;color:#64748b;margin-bottom:6px}.foot-note{color:#64748b;font-size:12px;line-height:1.6;margin-top:12px}.hidden{display:none!important}
+    .regular-only,.manager-only{transition:opacity .2s ease}
+    .manager-only{display:none}
+    body.manager-mode .regular-only{display:none!important}
+    body.manager-mode .manager-only{display:block!important}
+    body.manager-mode .manager-wide{grid-column:1/-1}
+    .filter-check{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:900;color:#334155;padding:9px 12px;border:1px solid var(--line);border-radius:13px;background:#fff;white-space:nowrap}
+    .filter-check input{width:16px;height:16px;accent-color:var(--blue)}
+    .sort-th{cursor:pointer;user-select:none;white-space:nowrap}.sort-th:hover{color:var(--blue)}.sort-th .arr{font-size:10px;color:#94a3b8;margin-left:4px}.sort-th.active .arr{color:var(--blue)}
+    .manager-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+    .manager-panel{background:#fff;border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:0 12px 34px rgba(15,23,42,.07);margin-bottom:18px}
+    .manager-card{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .filters.matrix-filters{grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto}
     @media(max-width:1180px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{display:grid;grid-template-columns:repeat(4,1fr)}.hero-grid,.upload-grid,.dashboard-grid,.split-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr 1fr}.manager-card{grid-template-columns:1fr 1fr}.insight{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}}
     @media(max-width:720px){.main{padding:18px}.title{font-size:28px}.kpis,.controls,.manager-card,.filters{grid-template-columns:1fr}.hero-stat{grid-template-columns:1fr}.nav{grid-template-columns:1fr 1fr}.week{grid-template-columns:repeat(5,34px)}.day{width:34px}.topbar{flex-direction:column}.top-actions{justify-content:flex-start}}
   </style>
@@ -74,7 +86,7 @@
 
       <section class="panel">
         <div class="panel-head"><div><div class="panel-title">2. 조회 조건</div><div class="panel-caption">조회 종료일 기준 진행 양호율과 최종 목표 달성률을 함께 계산합니다.</div></div><button class="btn ghost" onclick="clearAllFiles()">전체 초기화</button></div>
-        <div class="controls"><div class="field"><label>시작일</label><input type="date" id="startDate"></div><div class="field"><label>종료일</label><input type="date" id="endDate"></div><div class="field"><label>판정 방식</label><select id="judgeMode"><option value="progress">진행 기준</option><option value="final">최종 기준</option></select></div><div class="field"><label>표시 기준</label><select id="viewMode"><option value="all">전체 공사장</option><option value="bad">미흡 중심</option><option value="manager">관리자점검</option></select></div><button class="btn primary" onclick="analyze()">분석하기</button></div>
+        <div class="controls"><div class="field"><label>시작일</label><input type="date" id="startDate"></div><div class="field"><label>종료일</label><input type="date" id="endDate"></div><div class="field"><label>판정 방식</label><select id="judgeMode"><option value="progress">진행 기준</option><option value="final">최종 기준</option></select></div><div class="field"><label>표시 기준</label><select id="viewMode" onchange="if(this.value==='manager'){document.querySelector('.tab[data-team=\'관리자점검\']')?.click();}"><option value="all">전체 공사장</option><option value="bad">미흡 중심</option><option value="manager">관리자점검</option></select></div><button class="btn primary" onclick="analyze()">분석하기</button></div>
         <div class="quick"><button class="btn" onclick="setThisWeek()">이번 주</button><button class="btn" onclick="setToday()">오늘</button><button class="btn" onclick="setLast7()">최근 7일</button></div>
       </section>
 
@@ -85,45 +97,54 @@
         </div>
       </section>
 
-      <section class="kpis" id="kpiSection">
+      <section class="kpis regular-only" id="kpiSection">
         <div class="kpi score"><div class="lab">진행 기준 양호율</div><div class="val" id="goodRate">0%</div><div class="bar"><i id="goodBar"></i></div><div class="sub" id="rateSub">파일 업로드 후 분석해주세요.</div></div>
         <div class="kpi"><div class="lab">전체 공사장</div><div class="val" id="totalSites">0</div><div class="sub">조회 대상 등록관리 공사장</div></div>
         <div class="kpi"><div class="lab">양호</div><div class="val" id="goodSites">0</div><div class="sub">기준 충족 공사장</div></div>
         <div class="kpi"><div class="lab">미흡</div><div class="val" id="badSites">0</div><div class="sub">추가 점검 필요</div></div>
-        <div class="kpi"><div class="lab">인정 점검일</div><div class="val" id="acceptedDays">0</div><div class="sub">순회/입회 기준 중복일 제외</div></div>
+        <div class="kpi"><div class="lab">인정 점검일</div><div class="val" id="acceptedDays">0</div><div class="sub">순회/책임입회 기준 중복일 제외</div></div>
       </section>
 
-      <section class="kpis">
+      <section class="kpis regular-only">
         <div class="kpi"><div class="lab">순회</div><div class="val" id="roundCount">0</div><div class="sub">순회점검 실적</div></div>
         <div class="kpi"><div class="lab">입회</div><div class="val" id="attendCount">0</div><div class="sub">책임입회 실적</div></div>
         <div class="kpi"><div class="lab">관리자점검</div><div class="val" id="adminCount">0</div><div class="sub">별도 관리감독 실적</div></div>
-        <div class="kpi"><div class="lab">직원 실적 합계</div><div class="val" id="staffTotal">0</div><div class="sub">순회 + 입회</div></div>
+        <div class="kpi"><div class="lab">직원 실적 합계</div><div class="val" id="staffTotal">0</div><div class="sub">순회 + 책임입회</div></div>
         <div class="kpi"><div class="lab">최종 목표 달성률</div><div class="val" id="finalRate">0%</div><div class="sub">주간 최종 기준</div></div>
       </section>
 
-      <section class="dashboard-grid">
+      <section class="dashboard-grid regular-only">
         <div class="chart-card"><div class="panel-head"><div><div class="panel-title">등급별 양호/미흡</div><div class="panel-caption">특급/A/B/C/시설점검/나대지 기준 반영</div></div></div><div class="chart-wrap"><canvas id="gradeChart"></canvas></div></div>
         <div class="chart-card"><div class="panel-head"><div><div class="panel-title">팀별 양호율</div><div class="panel-caption">강서·목동·영등포 비교</div></div></div><div class="chart-wrap"><canvas id="teamChart"></canvas></div></div>
       </section>
 
-      <section class="split-grid">
-        <div class="chart-card"><div class="panel-head"><div><div class="panel-title">직원 실적</div><div class="panel-caption">직원별 순회/입회 실적</div></div></div><div class="chart-wrap short"><canvas id="staffChart"></canvas></div><div class="table-wrap"><table class="stat-table" id="staffTable"></table></div></div>
-        <div class="chart-card"><div class="panel-head"><div><div class="panel-title">관리자점검</div><div class="panel-caption">센터장·부장·팀장 관리감독 달성 현황</div></div></div><div class="manager-card" id="managerCards"></div><div class="foot-note">관리자별 대상 공사장과 특급/A급 각각의 달성 여부를 별도로 확인합니다.</div></div>
+      <section class="split-grid regular-only">
+        <div class="chart-card" style="grid-column:1/-1"><div class="panel-head"><div><div class="panel-title">직원 실적</div><div class="panel-caption">직원별 순회/책임입회 실적</div></div></div><div class="chart-wrap short"><canvas id="staffChart"></canvas></div><div class="table-wrap"><table class="stat-table" id="staffTable"></table></div></div>
       </section>
 
-      <section class="panel">
+      <section class="manager-panel manager-only manager-wide" id="managerOnlySection">
+        <div class="panel-head">
+          <div><div class="panel-title">관리자점검 전용 현황</div><div class="panel-caption">관리자점검 유형만 집계하며, 특급·A급 대상 공사장을 각각 주 1회 이상 점검하면 양호입니다.</div></div>
+          <div class="manager-toolbar"><label class="filter-check"><input type="checkbox" id="managerMissOnly" onchange="renderManagers()"> 미점검 대상만 보기</label></div>
+        </div>
+        <div class="manager-card" id="managerCards"></div>
+        <div class="foot-note">팀장은 본인 팀의 특급·A급, 센터장과 부장은 강서선로부 전체 특급·A급이 대상입니다.</div>
+      </section>
+
+      <section class="panel regular-only">
         <div class="panel-head"><div><div class="panel-title">미흡 공사장 목록</div><div class="panel-caption">필터와 정렬로 부족 공사장을 우선 확인합니다.</div></div><span class="badge bad" id="badCountBadge">0건</span></div>
-        <div class="filters"><input id="badSearch" placeholder="공사명/관리번호 검색" oninput="renderBadTable()"><select id="badGrade" onchange="renderBadTable()"><option value="">전체 등급</option><option>특급</option><option>A</option><option>B</option><option>C</option><option>시설점검</option><option>나대지</option></select><select id="badZero" onchange="renderBadTable()"><option value="">전체</option><option value="zero">점검 0회</option></select><select id="badSort" onchange="renderBadTable()"><option value="lack">부족 횟수 많은 순</option><option value="grade">등급 높은 순</option><option value="recent">최근 점검일 오래된 순</option><option value="name">공사명 가나다순</option></select></div>
+        <div class="filters"><input id="badSearch" placeholder="공사명/관리번호 검색" oninput="renderBadTable()"><select id="badTeam" onchange="renderBadTable()"><option value="">전체 팀</option></select><select id="badGrade" onchange="renderBadTable()"><option value="">전체 등급</option><option>특급</option><option>A</option><option>B</option><option>C</option><option>시설점검</option><option>나대지</option></select><select id="badZero" onchange="renderBadTable()"><option value="">전체 실적</option><option value="zero">점검 0회</option></select><select id="badSort" onchange="renderBadTable()"><option value="lack">부족 횟수</option><option value="team">팀</option><option value="name">공사장명</option><option value="grade">등급</option><option value="accepted">인정 횟수</option><option value="required">필요 횟수</option><option value="recent">최근 점검일</option></select><select id="badDir" onchange="renderBadTable()"><option value="desc">내림차순</option><option value="asc">오름차순</option></select></div>
         <div class="table-wrap"><table class="data-table" id="badTable"></table></div>
       </section>
 
-      <section class="panel">
+      <section class="panel regular-only">
         <div class="panel-head"><div><div class="panel-title">월~금 점검 체크표</div><div class="panel-caption">공사장별 어느 요일에 점검했는지 확인합니다. 순회/입회는 인정, 관리자점검은 표시만 합니다.</div></div><span class="badge info" id="matrixBadge">0건</span></div>
-        <div class="legend"><span><i class="dot g"></i>순회/입회 인정</span><span><i class="dot p"></i>관리자점검 표시</span><span><i class="dot b"></i>동일일 복수</span><span><i class="dot n"></i>미점검</span></div>
+        <div class="filters matrix-filters"><input id="matrixSearch" placeholder="공사명/관리번호 검색" oninput="renderMatrix(filteredResults())"><select id="matrixTeam" onchange="renderMatrix(filteredResults())"><option value="">전체 팀</option></select><select id="matrixGrade" onchange="renderMatrix(filteredResults())"><option value="">전체 등급</option><option>특급</option><option>A</option><option>B</option><option>C</option><option>시설점검</option><option>나대지</option></select><select id="matrixJudge" onchange="renderMatrix(filteredResults())"><option value="">전체 판정</option><option value="good">양호</option><option value="bad">미흡</option></select><select id="matrixSort" onchange="renderMatrix(filteredResults())"><option value="grade">등급</option><option value="team">팀</option><option value="name">공사장명</option><option value="accepted">인정 횟수</option><option value="required">필요 횟수</option><option value="judge">판정</option></select><select id="matrixDir" onchange="renderMatrix(filteredResults())"><option value="asc">오름차순</option><option value="desc">내림차순</option></select></div>
+        <div class="legend"><span><i class="dot g"></i>순회/책임입회 인정</span><span><i class="dot p"></i>관리자점검 표시</span><span><i class="dot b"></i>동일일 복수</span><span><i class="dot n"></i>미점검</span></div>
         <div class="table-wrap"><table class="data-table" id="matrixTable"></table></div>
       </section>
 
-      <section class="panel">
+      <section class="panel regular-only">
         <div class="panel-head"><div><div class="panel-title">자동 코멘트</div><div class="panel-caption">보고 또는 팀 공유 시 바로 참고할 수 있는 요약입니다.</div></div></div>
         <div class="insight" id="insights"><div class="item"><b>분석 대기</b><p>엑셀을 업로드하고 분석 버튼을 눌러주세요.</p></div></div>
       </section>
@@ -140,13 +161,14 @@ const managers=[
 const teamList=['강서선로팀','목동선로팀','영등포선로팀'];
 const gradeRank={'특급':1,'A':2,'B':3,'C':4,'시설점검':2,'나대지':5};
 
-window.addEventListener('DOMContentLoaded',()=>{initDates();bindUploads();bindTabs();updateToday();renderFileLists();});
+window.addEventListener('DOMContentLoaded',()=>{initDates();bindUploads();bindTabs();updateToday();renderFileLists();toggleViewMode();});
 function updateToday(){document.getElementById('todayPill').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});} 
 function initDates(){const now=new Date();const day=(now.getDay()+6)%7;const monday=new Date(now);monday.setDate(now.getDate()-day);document.getElementById('startDate').value=toInputDate(monday);document.getElementById('endDate').value=toInputDate(now);} 
 function setThisWeek(){initDates();} function setToday(){const d=toInputDate(new Date());startDate.value=d;endDate.value=d;} function setLast7(){const e=new Date();const s=new Date();s.setDate(e.getDate()-6);startDate.value=toInputDate(s);endDate.value=toInputDate(e);} 
 function toInputDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);} 
-function bindTabs(){document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.team=btn.dataset.team;renderAll();}));}
+function bindTabs(){document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.team=btn.dataset.team;toggleViewMode();renderAll();}));}
+function toggleViewMode(){document.body.classList.toggle('manager-mode',state.team==='관리자점검');}
 function bindUploads(){setupFileInput('siteInput','siteFiles','siteFiles');setupFileInput('inspectInput','inspectFiles','inspectFiles');setupDrop('siteDrop','siteInput');setupDrop('inspectDrop','inspectInput');}
 function setupDrop(dropId,inputId){const drop=document.getElementById(dropId);const input=document.getElementById(inputId);['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',ev=>{addFiles(inputId,[...ev.dataTransfer.files]);});}
 function setupFileInput(inputId,listId,key){document.getElementById(inputId).addEventListener('change',e=>{addFiles(inputId,[...e.target.files]);e.target.value='';});}
@@ -168,11 +190,11 @@ async function parseCheckFile(file){const wb=await readWorkbook(file);let rows=[
 function parseTable(arr){let headerIdx=arr.findIndex(row=>row.some(v=>String(v).trim()==='관리번호'));if(headerIdx<0)headerIdx=0;const headers=arr[headerIdx].map(h=>String(h).trim());return arr.slice(headerIdx+1).filter(row=>row.some(v=>String(v).trim()!=='')).map(row=>{const o={};headers.forEach((h,i)=>{if(h)o[h]=row[i];});return o;});}
 function pick(o,names){for(const n of names){const k=Object.keys(o).find(k=>k.replace(/\s/g,'').includes(n.replace(/\s/g,'')));if(k)return o[k];}return '';}
 function normalSite(r,source){const name=String(pick(r,['공사장명'])||'').trim();return {source,id:String(pick(r,['관리번호'])||'').trim(),name,team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),status:String(pick(r,['진행상태'])||''),address:String(pick(r,['공사장주소','주소'])||''),manager:String(pick(r,['담당자'])||''),type:String(pick(r,['공사종류'])||'')};}
-function normalCheck(r,source){const rawType=String(pick(r,['구분'])||'');const date=parseDate(pick(r,['점검종료시간','점검시작시간','굴착등록일','공사장등록일']));return {source,id:String(pick(r,['관리번호'])||'').trim(),name:String(pick(r,['공사장명'])||'').trim(),team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),type:normalizeCheckType(rawType),rawType,person:String(pick(r,['점검자/입회자','점검자','입회자'])||'').trim(),date,address:String(pick(r,['주소'])||'')};}
+function normalCheck(r,source){const rawType=String(pick(r,['구분','점검유형','점검 구분','점검종류'])||'').trim();const date=parseDate(pick(r,['점검종료시간','점검시작시간','점검일시','점검일','굴착등록일','공사장등록일']));return {source,id:String(pick(r,['관리번호'])||'').trim(),name:String(pick(r,['공사장명'])||'').trim(),team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),type:normalizeCheckType(rawType),rawType,person:String(pick(r,['점검자/입회자','점검자','입회자','책임입회자'])||'').trim(),date,address:String(pick(r,['주소'])||'')};}
 function parseDate(v){if(!v)return null;if(v instanceof Date&&!isNaN(v))return v;let s=String(v).trim();let m=s.match(/(\d{4})[-.\/년 ]\s*(\d{1,2})[-.\/월 ]\s*(\d{1,2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3]);return null;}
 function normalizeTeam(v){const s=String(v||'');if(s.includes('강서'))return '강서선로팀';if(s.includes('목동'))return '목동선로팀';if(s.includes('영등포'))return '영등포선로팀';return s.trim();}
 function normalizeGrade(v){const s=String(v||'').trim().toUpperCase();if(s.includes('특'))return '특급';if(s==='A'||s.includes('A'))return 'A';if(s==='B'||s.includes('B'))return 'B';if(s==='C'||s.includes('C'))return 'C';return s||'미지정';}
-function normalizeCheckType(v){const s=String(v||'');if(s.includes('관리자'))return '관리자점검';if(s.includes('입회'))return '입회';return '순회';}
+function normalizeCheckType(v){const s=String(v||'').replace(/\s/g,'');if(/관리자/.test(s))return '관리자점검';if(/책임입회|현장입회|입회/.test(s))return '입회';if(/순회/.test(s))return '순회';return '순회';}
 function inDateRange(d){if(!d)return false;const s=new Date(startDate.value+'T00:00:00');const e=new Date(endDate.value+'T23:59:59');return d>=s&&d<=e;}
 function dedupeSites(sites){const map=new Map();sites.forEach(s=>{if(!map.has(s.id))map.set(s.id,s);});return [...map.values()];}
 
@@ -182,16 +204,16 @@ function dateKey(d){return toInputDate(d);} function dayIdx(d){const g=d.getDay(
 function computeResults(){const checksById=new Map();state.checks.forEach(c=>{if(!checksById.has(c.id))checksById.set(c.id,[]);checksById.get(c.id).push(c);});const mode=document.getElementById('judgeMode').value;state.results=state.sites.map(site=>{const checks=checksById.get(site.id)||[];const acceptedDays=new Set();const dayTypes=[[],[],[],[],[]];let lastDate=null;let round=0,attend=0,admin=0;checks.forEach(c=>{if(c.type==='순회')round++; if(c.type==='입회')attend++; if(c.type==='관리자점검')admin++; if(c.date){if(!lastDate||c.date>lastDate)lastDate=c.date;const di=dayIdx(c.date);if(di!==null)dayTypes[di].push(c.type); if(c.type!=='관리자점검')acceptedDays.add(dateKey(c.date));}});const rule=getRule(site,mode);const finalRule=getRule(site,'final');const accepted=acceptedDays.size;return {...site,checks,round,attend,admin,accepted,required:rule.required,baseRequired:finalRule.required,category:rule.category,good:accepted>=rule.required,finalGood:accepted>=finalRule.required,lack:Math.max(0,rule.required-accepted),lastDate,dayTypes};});state.badRows=state.results.filter(r=>!r.good);}
 function filteredResults(){let arr=state.results;if(state.team&&state.team!=='전체'&&state.team!=='관리자점검')arr=arr.filter(r=>r.team===state.team);return arr;}
 function filteredChecks(){let arr=state.checks;if(state.team&&state.team!=='전체'&&state.team!=='관리자점검')arr=arr.filter(r=>r.team===state.team);return arr;}
-function renderAll(){if(state.team==='관리자점검'){document.getElementById('viewMode').value='manager';}const arr=filteredResults();const checks=filteredChecks();const good=arr.filter(r=>r.good).length,bad=arr.length-good;const rate=arr.length?Math.round(good/arr.length*100):0;const finalGood=arr.filter(r=>r.finalGood).length;const finalRate=arr.length?Math.round(finalGood/arr.length*100):0;const round=checks.filter(c=>c.type==='순회').length,attend=checks.filter(c=>c.type==='입회').length,admin=checks.filter(c=>c.type==='관리자점검').length;const accepted=arr.reduce((a,b)=>a+b.accepted,0);
+function renderAll(){toggleViewMode();if(state.team==='관리자점검'){document.getElementById('viewMode').value='manager';}refreshFilterOptions();const arr=filteredResults();const checks=filteredChecks();const good=arr.filter(r=>r.good).length,bad=arr.length-good;const rate=arr.length?Math.round(good/arr.length*100):0;const finalGood=arr.filter(r=>r.finalGood).length;const finalRate=arr.length?Math.round(finalGood/arr.length*100):0;const round=checks.filter(c=>c.type==='순회').length,attend=checks.filter(c=>c.type==='입회').length,admin=checks.filter(c=>c.type==='관리자점검').length;const accepted=arr.reduce((a,b)=>a+b.accepted,0);
  setText('goodRate',rate+'%');setText('rateSub',`${good}/${arr.length}개 양호 · ${bad}개 미흡`);document.getElementById('goodBar').style.width=rate+'%';setText('totalSites',arr.length);setText('goodSites',good);setText('badSites',bad);setText('acceptedDays',accepted);setText('roundCount',round);setText('attendCount',attend);setText('adminCount',admin);setText('staffTotal',round+attend);setText('finalRate',finalRate+'%');setText('heroSites',arr.length);setText('heroGood',good);setText('heroBad',bad);setText('badCountBadge',bad+'건');setText('matrixBadge',arr.length+'건');
  renderCharts(arr,checks);renderStaff(checks);renderManagers();renderBadTable();renderMatrix(arr);renderInsights(arr,checks,rate,finalRate);}
 function setText(id,v){document.getElementById(id).textContent=v;}
 function renderCharts(arr,checks){const gradeGroups={};arr.forEach(r=>{gradeGroups[r.category]??={good:0,bad:0};gradeGroups[r.category][r.good?'good':'bad']++;});const labels=Object.keys(gradeGroups).sort((a,b)=>(gradeRank[a]||9)-(gradeRank[b]||9));drawChart('gradeChart','bar',{labels,datasets:[{label:'양호',data:labels.map(l=>gradeGroups[l].good),backgroundColor:'#10b981',borderRadius:8},{label:'미흡',data:labels.map(l=>gradeGroups[l].bad),backgroundColor:'#ef4444',borderRadius:8}]},{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}});
  const teamData=teamList.map(t=>{const rows=state.results.filter(r=>r.team===t);return rows.length?Math.round(rows.filter(r=>r.good).length/rows.length*100):0;});drawChart('teamChart','bar',{labels:teamList.map(t=>t.replace('선로팀','')),datasets:[{label:'양호율',data:teamData,backgroundColor:'#2563eb',borderRadius:10}]},{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}});
- const staffMap={};checks.filter(c=>c.type!=='관리자점검').forEach(c=>{const p=c.person||'미지정';staffMap[p]??={round:0,attend:0};if(c.type==='순회')staffMap[p].round++;if(c.type==='입회')staffMap[p].attend++;});const staff=Object.entries(staffMap).map(([name,v])=>({name,...v,total:v.round+v.attend})).sort((a,b)=>b.total-a.total).slice(0,10);drawChart('staffChart','bar',{labels:staff.map(s=>s.name),datasets:[{label:'순회',data:staff.map(s=>s.round),backgroundColor:'#0ea5e9',borderRadius:8},{label:'입회',data:staff.map(s=>s.attend),backgroundColor:'#7c3aed',borderRadius:8}]},{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{beginAtZero:true,ticks:{precision:0}},y:{grid:{display:false}}}});
+ const staffMap={};checks.filter(c=>c.type!=='관리자점검').forEach(c=>{const p=c.person||'미지정';staffMap[p]??={round:0,attend:0};if(c.type==='순회')staffMap[p].round++;if(c.type==='입회')staffMap[p].attend++;});const staff=Object.entries(staffMap).map(([name,v])=>({name,...v,total:v.round+v.attend})).sort((a,b)=>b.total-a.total).slice(0,10);drawChart('staffChart','bar',{labels:staff.map(s=>s.name),datasets:[{label:'순회',data:staff.map(s=>s.round),backgroundColor:'#0ea5e9',borderRadius:8},{label:'책임입회',data:staff.map(s=>s.attend),backgroundColor:'#7c3aed',borderRadius:8}]},{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{beginAtZero:true,ticks:{precision:0}},y:{grid:{display:false}}}});
 }
 function drawChart(id,type,data,options){if(state.charts[id])state.charts[id].destroy();state.charts[id]=new Chart(document.getElementById(id),{type,data,options});}
-function renderStaff(checks){const map={};checks.filter(c=>c.type!=='관리자점검').forEach(c=>{const p=c.person||'미지정';map[p]??={round:0,attend:0,total:0};if(c.type==='순회')map[p].round++;if(c.type==='입회')map[p].attend++;map[p].total++;});const rows=Object.entries(map).map(([name,v])=>({name,...v})).sort((a,b)=>b.total-a.total);const t=document.getElementById('staffTable');t.innerHTML='<thead><tr><th>담당자</th><th>순회</th><th>입회</th><th>합계</th></tr></thead><tbody>'+rows.slice(0,10).map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${r.round}</td><td>${r.attend}</td><td><b>${r.total}</b></td></tr>`).join('')+'</tbody>';}
+function renderStaff(checks){const map={};checks.filter(c=>c.type!=='관리자점검').forEach(c=>{const p=c.person||'미지정';map[p]??={round:0,attend:0,total:0};if(c.type==='순회')map[p].round++;if(c.type==='입회')map[p].attend++;map[p].total++;});const rows=Object.entries(map).map(([name,v])=>({name,...v})).sort((a,b)=>b.total-a.total);const t=document.getElementById('staffTable');t.innerHTML='<thead><tr><th>담당자</th><th>순회</th><th>책임입회</th><th>합계</th></tr></thead><tbody>'+rows.slice(0,10).map(r=>`<tr><td>${escapeHtml(r.name)}</td><td>${r.round}</td><td>${r.attend}</td><td><b>${r.total}</b></td></tr>`).join('')+'</tbody>';}
 function managerNameMatch(person,name){const p=String(person||'').replace(/\s/g,'');const n=String(name||'').replace(/\s/g,'');return p===n||p.includes(n)||n.includes(p);} 
 function managerTargetSites(m,grade){return state.sites.filter(site=>(m.scope==='all'||site.team===m.scope)&&site.grade===grade);} 
 function uniqueManagerChecks(checks){const seen=new Set();return checks.filter(c=>{const key=[c.id,c.date?toInputDate(c.date):'',c.person].join('|');if(seen.has(key))return false;seen.add(key);return true;});}
@@ -204,7 +226,7 @@ function managerTargetDetailRows(m,adminChecks,grade){
     const raw=adminChecks.filter(c=>managerNameMatch(c.person,m.name)&&c.id===site.id);
     const checks=uniqueManagerChecks(raw);
     const count=checks.length;
-    const ok=count>=3;
+    const ok=count>=1;
     return {site,grade,checks,count,ok};
   }).sort((a,b)=>(a.ok-b.ok)||simpleTeam(a.site.team).localeCompare(simpleTeam(b.site.team),'ko')||shortSiteName(a.site.name).localeCompare(shortSiteName(b.site.name),'ko'));
 }
@@ -219,7 +241,7 @@ function renderManagers(){
       const targetCount=rows.length;
       const goodCount=rows.filter(d=>d.ok).length;
       const totalChecks=rows.reduce((a,d)=>a+d.count,0);
-      const requiredTotal=targetCount*3;
+      const requiredTotal=targetCount;
       const ok=targetCount?goodCount===targetCount:true;
       return {grade,rows,targetCount,goodCount,totalChecks,requiredTotal,ok};
     });
@@ -227,12 +249,14 @@ function renderManagers(){
     const overallOk=validRows.length?validRows.every(r=>r.ok):true;
     const total=details.reduce((a,d)=>a+d.count,0);
     const badTargets=details.filter(d=>!d.ok).length;
+    const showMissOnly=Boolean(document.getElementById('managerMissOnly')?.checked);
+    const visibleDetails=showMissOnly?details.filter(d=>!d.ok):details;
     const div=document.createElement('div');
     div.className='mgr '+(overallOk?'ok':'fail');
     div.innerHTML=`
       <div class="role">${m.role}</div>
       <div class="nm">${m.name}</div>
-      <div class="mgr-target">대상: <b>${scopeText}</b>의 <b>특급</b> 및 <b>A급</b><br>기준: <b>대상 공사장별</b> 주 3회 이상 관리자점검</div>
+      <div class="mgr-target">대상: <b>${scopeText}</b>의 <b>특급</b> 및 <b>A급</b><br>기준: <b>대상 공사장별</b> 주 1회 이상 관리자점검</div>
       <div class="mgr-summary">
         <div><div class="mgr-total">${total}<span style="font-size:13px;color:#64748b">건</span></div><div class="muted" style="font-size:12px">관리자점검 합계 · 미흡대상 ${badTargets}개</div></div>
         <span class="badge ${overallOk?'good':'bad'}">${overallOk?'양호':'미흡'}</span>
@@ -240,17 +264,17 @@ function renderManagers(){
       <table class="mgr-grade-table">
         <thead><tr><th>구분</th><th>대상</th><th>양호</th><th>실적/기준</th><th>판정</th></tr></thead>
         <tbody>
-          ${gradeRows.map(r=>`<tr><td>${r.grade}</td><td>${r.targetCount}개</td><td>${r.goodCount}/${r.targetCount}</td><td><b>${r.totalChecks}</b> / ${r.targetCount?r.requiredTotal:'-'}</td><td class="${!r.targetCount?'emptytxt':r.ok?'oktxt':'failtxt'}">${!r.targetCount?'대상없음':r.ok?'양호':'미흡'}</td></tr>`).join('')}
+          ${validRows.map(r=>`<tr><td>${r.grade}</td><td>${r.targetCount}개</td><td>${r.goodCount}/${r.targetCount}</td><td><b>${r.totalChecks}</b> / ${r.requiredTotal}</td><td class="${r.ok?'oktxt':'failtxt'}">${r.ok?'양호':'미흡'}</td></tr>`).join('')}
         </tbody>
       </table>
       <div class="mgr-detail">
-        <div class="mgr-detail-title"><span>대상 공사장 상세</span><span>${details.length}개</span></div>
-        ${details.length?`<table class="mgr-target-table">
+        <div class="mgr-detail-title"><span>${showMissOnly?'미점검 대상 상세':'대상 공사장 상세'}</span><span>${visibleDetails.length}개</span></div>
+        ${visibleDetails.length?`<table class="mgr-target-table">
           <thead><tr><th>팀</th><th>등급</th><th>공사장</th><th>월화수목금</th><th>실적</th><th>판정</th></tr></thead>
           <tbody>
-            ${details.map(d=>`<tr class="${d.ok?'mgr-row-good':'mgr-row-bad'}"><td>${simpleTeam(d.site.team)}</td><td><span class="mgr-grade-pill ${d.grade==='특급'?'special':''}">${d.grade}</span></td><td><div class="site-short" title="${escapeHtml(d.site.name)}">${escapeHtml(shortSiteName(d.site.name))}</div><div class="id-mini">${escapeHtml(d.site.id)}</div></td><td>${targetSiteWeekHtml(d.checks)}</td><td><b>${d.count}</b> / 3</td><td class="${d.ok?'pass':d.count>0?'warn':'miss'}">${d.ok?'양호':d.count>0?'부족':'미점검'}</td></tr>`).join('')}
+            ${visibleDetails.map(d=>`<tr class="${d.ok?'mgr-row-good':'mgr-row-bad'}"><td>${simpleTeam(d.site.team)}</td><td><span class="mgr-grade-pill ${d.grade==='특급'?'special':''}">${d.grade}</span></td><td><div class="site-short" title="${escapeHtml(d.site.name)}">${escapeHtml(shortSiteName(d.site.name))}</div><div class="id-mini">${escapeHtml(d.site.id)}</div></td><td>${targetSiteWeekHtml(d.checks)}</td><td><b>${d.count}</b> / 1</td><td class="${d.ok?'pass':d.count>0?'warn':'miss'}">${d.ok?'양호':d.count>0?'부족':'미점검'}</td></tr>`).join('')}
           </tbody>
-        </table>`:'<div class="empty-state"><b>대상 공사장이 없습니다.</b></div>'}
+        </table>`:`<div class="empty-state"><b>${showMissOnly?'미점검 대상이 없습니다.':'대상 공사장이 없습니다.'}</b></div>`}
         <div class="mgr-more">※ 공사장명은 화면 가독성을 위해 핵심 단어로 축약 표시합니다. 마우스를 올리면 전체 공사장명을 확인할 수 있습니다.</div>
       </div>
       <div class="mgr-note">※ 관리자점검 대상은 특급/A급만 적용합니다. 팀장은 본인 팀만, 센터장·부장은 팀 구분 없이 전체가 대상입니다.</div>
@@ -258,8 +282,53 @@ function renderManagers(){
     box.appendChild(div);
   });
 }
-function renderBadTable(){let rows=filteredResults().filter(r=>!r.good);const q=badSearch.value.trim().toLowerCase();if(q)rows=rows.filter(r=>(r.name+r.id).toLowerCase().includes(q));if(badGrade.value)rows=rows.filter(r=>r.category===badGrade.value||r.grade===badGrade.value);if(badZero.value==='zero')rows=rows.filter(r=>r.accepted===0);const sort=badSort.value;rows.sort((a,b)=>{if(sort==='lack')return b.lack-a.lack||(gradeRank[a.category]||9)-(gradeRank[b.category]||9);if(sort==='grade')return (gradeRank[a.category]||9)-(gradeRank[b.category]||9);if(sort==='recent')return (a.lastDate?.getTime()||0)-(b.lastDate?.getTime()||0);return a.name.localeCompare(b.name,'ko');});const t=badTable;if(!rows.length){t.innerHTML='<tr><td><div class="empty-state"><b>미흡 공사장이 없습니다.</b><span>현재 조건에서는 모두 양호입니다.</span></div></td></tr>';return;}t.innerHTML='<thead><tr><th>팀</th><th>등급</th><th>공사장명</th><th>인정</th><th>필요</th><th>부족</th><th>최근점검</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${r.team.replace('선로팀','')}</td><td><span class="badge warn">${r.category}</span></td><td class="name-cell">${escapeHtml(r.name)}<div class="muted">${escapeHtml(r.id)}</div></td><td class="done">${r.accepted}</td><td>${r.required}</td><td class="need">${r.lack}</td><td>${r.lastDate?toInputDate(r.lastDate):'-'}</td></tr>`).join('')+'</tbody>';}
-function renderMatrix(arr){const rows=arr.slice().sort((a,b)=>(gradeRank[a.category]||9)-(gradeRank[b.category]||9)||a.name.localeCompare(b.name,'ko'));const t=matrixTable;if(!rows.length){t.innerHTML='<tr><td><div class="empty-state"><b>표시할 공사장이 없습니다.</b></div></td></tr>';return;}t.innerHTML='<thead><tr><th>팀</th><th>등급</th><th>공사장명</th><th>월~금</th><th>인정/필요</th><th>판정</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${r.team.replace('선로팀','')}</td><td>${r.category}</td><td class="name-cell">${escapeHtml(r.name)}<div class="muted">${escapeHtml(r.id)}</div></td><td>${weekHtml(r.dayTypes)}</td><td><b>${r.accepted}</b> / ${r.required}</td><td><span class="badge ${r.good?'good':'bad'}">${r.good?'양호':'미흡'}</span></td></tr>`).join('')+'</tbody>';}
+function refreshFilterOptions(){
+  const teams=[...new Set(state.results.map(r=>r.team).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+  [['badTeam','전체 팀'],['matrixTeam','전체 팀']].forEach(([id,label])=>{const el=document.getElementById(id);if(!el)return;const current=el.value;el.innerHTML=`<option value="">${label}</option>`+teams.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(simpleTeam(t))}</option>`).join('');if(teams.includes(current))el.value=current;});
+}
+function compareText(a,b){return String(a||'').localeCompare(String(b||''),'ko',{numeric:true,sensitivity:'base'});}
+function compareDate(a,b){return (a?.getTime?.()||0)-(b?.getTime?.()||0);}
+function applyDirection(value,dir){return dir==='desc'?-value:value;}
+function badSortValue(a,b,key){if(key==='team')return compareText(simpleTeam(a.team),simpleTeam(b.team));if(key==='name')return compareText(a.name,b.name);if(key==='grade')return (gradeRank[a.category]||9)-(gradeRank[b.category]||9);if(key==='accepted')return a.accepted-b.accepted;if(key==='required')return a.required-b.required;if(key==='recent')return compareDate(a.lastDate,b.lastDate);return a.lack-b.lack;}
+function setBadSort(key){const sel=document.getElementById('badSort'),dir=document.getElementById('badDir');if(sel.value===key)dir.value=dir.value==='asc'?'desc':'asc';else{sel.value=key;dir.value=key==='name'||key==='team'||key==='grade'?'asc':'desc';}renderBadTable();}
+function sortHeader(label,key,current,dir){return `<th class="sort-th ${current===key?'active':''}" onclick="setBadSort('${key}')">${label}<span class="arr">${current===key?(dir==='asc'?'▲':'▼'):'↕'}</span></th>`;}
+function renderBadTable(){
+  let rows=filteredResults().filter(r=>!r.good);
+  const q=(document.getElementById('badSearch')?.value||'').trim().toLowerCase();
+  const team=document.getElementById('badTeam')?.value||'';
+  const grade=document.getElementById('badGrade')?.value||'';
+  const zero=document.getElementById('badZero')?.value||'';
+  const sort=document.getElementById('badSort')?.value||'lack';
+  const dir=document.getElementById('badDir')?.value||'desc';
+  if(q)rows=rows.filter(r=>(r.name+r.id+r.team).toLowerCase().includes(q));
+  if(team)rows=rows.filter(r=>r.team===team);
+  if(grade)rows=rows.filter(r=>r.category===grade||r.grade===grade);
+  if(zero==='zero')rows=rows.filter(r=>r.accepted===0);
+  rows.sort((a,b)=>applyDirection(badSortValue(a,b,sort),dir)||((gradeRank[a.category]||9)-(gradeRank[b.category]||9))||compareText(a.name,b.name));
+  const t=document.getElementById('badTable');
+  if(!rows.length){t.innerHTML='<tr><td><div class="empty-state"><b>미흡 공사장이 없습니다.</b><span>현재 조건에서는 모두 양호입니다.</span></div></td></tr>';return;}
+  t.innerHTML='<thead><tr>'+sortHeader('팀','team',sort,dir)+sortHeader('등급','grade',sort,dir)+sortHeader('공사장명','name',sort,dir)+sortHeader('인정','accepted',sort,dir)+sortHeader('필요','required',sort,dir)+sortHeader('부족','lack',sort,dir)+sortHeader('최근점검','recent',sort,dir)+'</tr></thead><tbody>'+rows.map(r=>`<tr><td>${escapeHtml(simpleTeam(r.team))}</td><td><span class="badge warn">${escapeHtml(r.category)}</span></td><td class="name-cell">${escapeHtml(r.name)}<div class="muted">${escapeHtml(r.id)}</div></td><td class="done">${r.accepted}</td><td>${r.required}</td><td class="need">${r.lack}</td><td>${r.lastDate?toInputDate(r.lastDate):'-'}</td></tr>`).join('')+'</tbody>';
+}
+function matrixSortValue(a,b,key){if(key==='team')return compareText(simpleTeam(a.team),simpleTeam(b.team));if(key==='name')return compareText(a.name,b.name);if(key==='accepted')return a.accepted-b.accepted;if(key==='required')return a.required-b.required;if(key==='judge')return Number(a.good)-Number(b.good);return (gradeRank[a.category]||9)-(gradeRank[b.category]||9);}
+function setMatrixSort(key){const sel=document.getElementById('matrixSort'),dir=document.getElementById('matrixDir');if(sel.value===key)dir.value=dir.value==='asc'?'desc':'asc';else{sel.value=key;dir.value='asc';}renderMatrix(filteredResults());}
+function matrixSortHeader(label,key,current,dir){return `<th class="sort-th ${current===key?'active':''}" onclick="setMatrixSort('${key}')">${label}<span class="arr">${current===key?(dir==='asc'?'▲':'▼'):'↕'}</span></th>`;}
+function renderMatrix(arr){
+  let rows=arr.slice();
+  const q=(document.getElementById('matrixSearch')?.value||'').trim().toLowerCase();
+  const team=document.getElementById('matrixTeam')?.value||'';
+  const grade=document.getElementById('matrixGrade')?.value||'';
+  const judge=document.getElementById('matrixJudge')?.value||'';
+  const sort=document.getElementById('matrixSort')?.value||'grade';
+  const dir=document.getElementById('matrixDir')?.value||'asc';
+  if(q)rows=rows.filter(r=>(r.name+r.id+r.team).toLowerCase().includes(q));
+  if(team)rows=rows.filter(r=>r.team===team);
+  if(grade)rows=rows.filter(r=>r.category===grade||r.grade===grade);
+  if(judge==='good')rows=rows.filter(r=>r.good);else if(judge==='bad')rows=rows.filter(r=>!r.good);
+  rows.sort((a,b)=>applyDirection(matrixSortValue(a,b,sort),dir)||compareText(a.name,b.name));
+  const t=document.getElementById('matrixTable');
+  if(!rows.length){t.innerHTML='<tr><td><div class="empty-state"><b>표시할 공사장이 없습니다.</b></div></td></tr>';return;}
+  t.innerHTML='<thead><tr>'+matrixSortHeader('팀','team',sort,dir)+matrixSortHeader('등급','grade',sort,dir)+matrixSortHeader('공사장명','name',sort,dir)+'<th>월~금</th>'+matrixSortHeader('인정/필요','accepted',sort,dir)+matrixSortHeader('판정','judge',sort,dir)+'</tr></thead><tbody>'+rows.map(r=>`<tr><td>${escapeHtml(simpleTeam(r.team))}</td><td>${escapeHtml(r.category)}</td><td class="name-cell">${escapeHtml(r.name)}<div class="muted">${escapeHtml(r.id)}</div></td><td>${weekHtml(r.dayTypes)}</td><td><b>${r.accepted}</b> / ${r.required}</td><td><span class="badge ${r.good?'good':'bad'}">${r.good?'양호':'미흡'}</span></td></tr>`).join('')+'</tbody>';
+}
 function weekHtml(dayTypes){const labs=['월','화','수','목','금'];return '<div class="week">'+dayTypes.map((types,i)=>{if(!types.length)return `<div class="day none" title="${labs[i]}">-</div>`;const hasAdmin=types.includes('관리자점검'), hasAcc=types.some(t=>t!=='관리자점검');let cls=hasAdmin&&hasAcc?'mix':hasAdmin?'admin':'on';let txt=hasAdmin&&hasAcc?'복':hasAdmin?'관':types.includes('입회')?'입':'순';return `<div class="day ${cls}" title="${labs[i]} · ${types.join(', ')}">${txt}</div>`;}).join('')+'</div>';}
 function renderInsights(arr,checks,rate,finalRate){const bad=arr.filter(r=>!r.good);const zero=bad.filter(r=>r.accepted===0).length;const topBad=bad.slice().sort((a,b)=>b.lack-a.lack)[0];const html=[`<div class="item"><b>전체 양호율 ${rate}%</b><p>현재 선택 조건에서 ${arr.length}개 중 ${arr.filter(r=>r.good).length}개가 진행 기준을 충족했습니다.</p></div>`,`<div class="item"><b>미점검 ${zero}건</b><p>점검 0회 공사장은 우선 확인이 필요합니다. 미흡 목록에서 ‘점검 0회’ 필터를 사용하세요.</p></div>`,`<div class="item"><b>최우선 확인 대상</b><p>${topBad?escapeHtml(topBad.name)+' · 부족 '+topBad.lack+'회':'현재 미흡 공사장이 없습니다.'}</p></div>`].join('');insights.innerHTML=html;}
 </script>
