@@ -134,9 +134,9 @@
       </section>
 
       <section class="kpis regular-only">
-        <div class="kpi"><div class="lab">순회</div><div class="val" id="roundCount">0</div><div class="sub">순회점검 실적</div></div>
-        <div class="kpi"><div class="lab">입회</div><div class="val" id="attendCount">0</div><div class="sub">책임입회 실적</div></div>
-        <div class="kpi"><div class="lab">관리자점검</div><div class="val" id="adminCount">0</div><div class="sub">별도 관리감독 실적</div></div>
+        <div class="kpi"><div class="lab">순회</div><div class="val" id="roundCount">0</div><div class="sub">공사장 목록과 매칭된 순회점검 실적</div></div>
+        <div class="kpi"><div class="lab">입회</div><div class="val" id="attendCount">0</div><div class="sub">공사장 목록과 매칭된 책임입회 실적</div></div>
+        <div class="kpi"><div class="lab">관리자점검</div><div class="val" id="adminCount">0</div><div class="sub">목록과 매칭된 관리자점검 실적</div></div>
         <div class="kpi"><div class="lab">직원 실적 합계</div><div class="val" id="staffTotal">0</div><div class="sub">순회 + 책임입회</div></div>
         <div class="kpi"><div class="lab">최종 목표 달성률</div><div class="val" id="finalRate">0%</div><div class="sub">주간 최종 기준</div></div>
       </section>
@@ -291,7 +291,20 @@ function progressRequired(base){const end=new Date(endDate.value+'T00:00:00');co
 function dateKey(d){return toInputDate(d);} function dayIdx(d){const g=d.getDay();return g>=1&&g<=5?g-1:null;}
 function computeResults(){const checksById=new Map();state.checks.forEach(c=>{if(!checksById.has(c.id))checksById.set(c.id,[]);checksById.get(c.id).push(c);});const mode=document.getElementById('judgeMode').value;state.results=state.sites.map(site=>{const checks=checksById.get(site.id)||[];const acceptedDays=new Set();const dayTypes=[[],[],[],[],[]];let lastDate=null;let round=0,attend=0,admin=0;checks.forEach(c=>{if(c.type==='순회')round++; if(c.type==='입회')attend++; if(c.type==='관리자점검')admin++; if(c.date){if(!lastDate||c.date>lastDate)lastDate=c.date;const di=dayIdx(c.date);if(di!==null)dayTypes[di].push(c.type); if(c.type!=='관리자점검')acceptedDays.add(dateKey(c.date));}});const rule=getRule(site,mode);const finalRule=getRule(site,'final');const accepted=acceptedDays.size;return {...site,checks,round,attend,admin,accepted,required:rule.required,baseRequired:finalRule.required,category:rule.category,good:accepted>=rule.required,finalGood:accepted>=finalRule.required,lack:Math.max(0,rule.required-accepted),lastDate,dayTypes};});state.badRows=state.results.filter(r=>!r.good);}
 function filteredResults(){let arr=state.results;if(state.team&&state.team!=='전체'&&state.team!=='관리자점검')arr=arr.filter(r=>r.team===state.team);return arr;}
-function filteredChecks(){let arr=state.checks;if(state.team&&state.team!=='전체'&&state.team!=='관리자점검')arr=arr.filter(r=>r.team===state.team);return arr;}
+function getValidSiteIdSet(){
+  return new Set(state.sites.map(site=>String(site.id||'').trim()).filter(Boolean));
+}
+function getMatchedChecks(){
+  const validSiteIds=getValidSiteIdSet();
+  return state.checks.filter(check=>validSiteIds.has(String(check.id||'').trim()));
+}
+function filteredChecks(){
+  let arr=getMatchedChecks();
+  if(state.team&&state.team!=='전체'&&state.team!=='관리자점검'){
+    arr=arr.filter(check=>check.team===state.team);
+  }
+  return arr;
+}
 function renderAll(){toggleViewMode();if(state.team==='관리자점검'){document.getElementById('viewMode').value='manager';}refreshFilterOptions();const arr=filteredResults();const checks=filteredChecks();const good=arr.filter(r=>r.good).length,bad=arr.length-good;const rate=arr.length?Math.round(good/arr.length*100):0;const finalGood=arr.filter(r=>r.finalGood).length;const finalRate=arr.length?Math.round(finalGood/arr.length*100):0;const round=checks.filter(c=>c.type==='순회').length,attend=checks.filter(c=>c.type==='입회').length,admin=checks.filter(c=>c.type==='관리자점검').length;const accepted=arr.reduce((a,b)=>a+b.accepted,0);
  setText('goodRate',rate+'%');setText('rateSub',`${good}/${arr.length}개 양호 · ${bad}개 미흡`);document.getElementById('goodBar').style.width=rate+'%';setText('totalSites',arr.length);setText('goodSites',good);setText('badSites',bad);setText('acceptedDays',accepted);setText('roundCount',round);setText('attendCount',attend);setText('adminCount',admin);setText('staffTotal',round+attend);setText('finalRate',finalRate+'%');setText('heroSites',arr.length);setText('heroGood',good);setText('heroBad',bad);setText('badCountBadge',bad+'건');setText('matrixBadge',arr.length+'건');
  renderCharts(arr,checks);renderStaff(checks);renderManagers();renderBadTable();renderMatrix(arr);renderInsights(arr,checks,rate,finalRate);}
@@ -319,7 +332,7 @@ function managerTargetDetailRows(m,adminChecks,grade){
   }).sort((a,b)=>(a.ok-b.ok)||simpleTeam(a.site.team).localeCompare(simpleTeam(b.site.team),'ko')||shortSiteName(a.site.name).localeCompare(shortSiteName(b.site.name),'ko'));
 }
 function renderManagers(){
-  const adminChecks=state.checks.filter(c=>c.type==='관리자점검');
+  const adminChecks=getMatchedChecks().filter(c=>c.type==='관리자점검');
   const box=document.getElementById('managerCards');box.innerHTML='';
   managers.forEach(m=>{
     const scopeText=m.scope==='all'?'강서선로부 전체':simpleTeam(m.scope);
