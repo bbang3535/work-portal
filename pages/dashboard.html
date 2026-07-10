@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BBITT LAB · 사외공사장 점검 대시보드</title>
+  <title>BBITT LAB · 사외공사장 점검 대시보드 v3.1</title>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
@@ -45,7 +45,17 @@
     .manager-panel{background:#fff;border:1px solid var(--line);border-radius:26px;padding:18px;box-shadow:0 12px 34px rgba(15,23,42,.07);margin-bottom:18px}
     .manager-card{grid-template-columns:repeat(2,minmax(0,1fr))}
     .filters.matrix-filters{grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto}
-    @media(max-width:1180px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{display:grid;grid-template-columns:repeat(4,1fr)}.hero-grid,.upload-grid,.dashboard-grid,.split-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr 1fr}.manager-card{grid-template-columns:1fr 1fr}.insight{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}}
+    .drive-panel{background:linear-gradient(135deg,#0f172a,#1e3a8a);color:#fff;border:none;overflow:hidden;position:relative}
+    .drive-panel:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.08);right:-90px;top:-120px}
+    .drive-head{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+    .drive-title{font-size:20px;font-weight:950;letter-spacing:-.03em}.drive-caption{font-size:12px;color:#cbd5e1;line-height:1.55;margin-top:5px}
+    .drive-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.drive-btn{height:38px;padding:0 13px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-weight:900}.drive-btn:hover{background:rgba(255,255,255,.2)}
+    .drive-grid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.drive-stat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:14px}.drive-stat .d-label{font-size:11px;color:#cbd5e1;font-weight:800}.drive-stat .d-value{font-size:24px;font-weight:950;margin-top:6px}.drive-stat .d-sub{font-size:10px;color:#94a3b8;margin-top:4px}
+    .drive-status{position:relative;margin-top:12px;padding:11px 13px;border-radius:14px;background:rgba(15,23,42,.35);font-size:12px;color:#dbeafe;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .storage-bar{height:7px;background:rgba(255,255,255,.13);border-radius:999px;overflow:hidden;margin-top:8px}.storage-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22c55e,#60a5fa);border-radius:999px;transition:.4s}
+    .file-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.mini-tag{font-size:10px;font-weight:900;padding:4px 7px;border-radius:999px;background:#eff6ff;color:#1d4ed8}.mini-tag.green{background:#dcfce7;color:#047857}.file-chip .file-main{min-width:0;flex:1}.file-chip .file-sub{font-size:10px;color:#94a3b8;margin-top:3px}.file-chip .chip-actions{display:flex;gap:6px;align-items:center}.file-chip button.secondary{background:#e0ecff;color:#1d4ed8}
+    .db-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#dcfce7;color:#047857;font-size:11px;font-weight:950}.db-badge.off{background:#fee2e2;color:#b91c1c}
+    @media(max-width:1180px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.nav{display:grid;grid-template-columns:repeat(4,1fr)}.hero-grid,.upload-grid,.dashboard-grid,.split-grid,.drive-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.controls{grid-template-columns:1fr 1fr}.manager-card{grid-template-columns:1fr 1fr}.insight{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}}
     @media(max-width:720px){.main{padding:18px}.title{font-size:28px}.kpis,.controls,.manager-card,.filters{grid-template-columns:1fr}.hero-stat{grid-template-columns:1fr}.nav{grid-template-columns:1fr 1fr}.week{grid-template-columns:repeat(5,34px)}.day{width:34px}.topbar{flex-direction:column}.top-actions{justify-content:flex-start}}
   </style>
 </head>
@@ -61,7 +71,7 @@
         <a href="#"><span class="ico">📞</span>Contacts</a>
         <a href="#"><span class="ico">⚙</span>Settings</a>
       </nav>
-      <div class="side-card"><b>점검 대시보드 v2.0</b><p>강서선로부 등록관리 공사장의 점검 충족 여부, 직원 실적, 관리자점검을 한 화면에서 분석합니다.</p></div>
+      <div class="side-card"><b>점검 대시보드 v3.0 · Drive</b><p>강서선로부 등록관리 공사장의 점검 충족 여부, 직원 실적, 관리자점검을 한 화면에서 분석합니다.</p></div>
     </aside>
     <main class="main">
       <div class="topbar">
@@ -84,9 +94,27 @@
         </div>
       </section>
 
+      <section class="panel drive-panel">
+        <div class="drive-head">
+          <div><div class="drive-title">📁 BBITT LAB Drive</div><div class="drive-caption">업로드한 공사장 목록과 점검결과를 이 브라우저에 누적 저장합니다. 같은 PC·같은 브라우저에서 다시 접속하면 자동으로 복원됩니다.</div></div>
+          <div class="drive-actions">
+            <button class="drive-btn" onclick="exportBackup()">백업 내보내기</button>
+            <button class="drive-btn" onclick="document.getElementById('restoreInput').click()">백업 복원</button>
+            <input id="restoreInput" type="file" accept=".json" hidden onchange="importBackup(this.files[0]);this.value=''">
+          </div>
+        </div>
+        <div class="drive-grid">
+          <div class="drive-stat"><div class="d-label">공사장 마스터</div><div class="d-value" id="driveSiteFiles">0</div><div class="d-sub" id="driveSiteRows">0개 공사장</div></div>
+          <div class="drive-stat"><div class="d-label">점검결과 파일</div><div class="d-value" id="driveCheckFiles">0</div><div class="d-sub" id="driveCheckRows">0건 점검</div></div>
+          <div class="drive-stat"><div class="d-label">최근 업데이트</div><div class="d-value" id="driveUpdated" style="font-size:17px">-</div><div class="d-sub">브라우저 DB 기준</div></div>
+          <div class="drive-stat"><div class="d-label">저장공간</div><div class="d-value" id="driveStorage" style="font-size:17px">확인 중</div><div class="storage-bar"><i id="storageBar"></i></div></div>
+        </div>
+        <div class="drive-status"><span id="dbStatus" class="db-badge">● IndexedDB 연결 중</span><span>개인 브라우저 저장 · 다른 PC와 자동 공유되지 않음 · 백업 권장</span></div>
+      </section>
+
       <section class="panel">
         <div class="panel-head"><div><div class="panel-title">2. 조회 조건</div><div class="panel-caption">조회 종료일 기준 진행 양호율과 최종 목표 달성률을 함께 계산합니다.</div></div><button class="btn ghost" onclick="clearAllFiles()">전체 초기화</button></div>
-        <div class="controls"><div class="field"><label>시작일</label><input type="date" id="startDate"></div><div class="field"><label>종료일</label><input type="date" id="endDate"></div><div class="field"><label>판정 방식</label><select id="judgeMode"><option value="progress">진행 기준</option><option value="final">최종 기준</option></select></div><div class="field"><label>표시 기준</label><select id="viewMode" onchange="if(this.value==='manager'){document.querySelector('.tab[data-team=\'관리자점검\']')?.click();}"><option value="all">전체 공사장</option><option value="bad">미흡 중심</option><option value="manager">관리자점검</option></select></div><button class="btn primary" onclick="analyze()">분석하기</button></div>
+        <div class="controls"><div class="field"><label>시작일</label><input type="date" id="startDate" onchange="analyze(true)"></div><div class="field"><label>종료일</label><input type="date" id="endDate" onchange="analyze(true)"></div><div class="field"><label>판정 방식</label><select id="judgeMode" onchange="analyze(true)"><option value="progress">진행 기준</option><option value="final">최종 기준</option></select></div><div class="field"><label>표시 기준</label><select id="viewMode" onchange="if(this.value==='manager'){document.querySelector('.tab[data-team=\'관리자점검\']')?.click();}"><option value="all">전체 공사장</option><option value="bad">미흡 중심</option><option value="manager">관리자점검</option></select></div><button class="btn primary" onclick="analyze()">분석하기</button></div>
         <div class="quick"><button class="btn" onclick="setThisWeek()">이번 주</button><button class="btn" onclick="setToday()">오늘</button><button class="btn" onclick="setLast7()">최근 7일</button></div>
       </section>
 
@@ -153,6 +181,10 @@
   <div class="toast" id="toast"></div>
 
 <script>
+const DB_NAME='bbittlab-dashboard';
+const DB_VERSION=1;
+const STORE_NAME='files';
+let db=null;
 const state={siteFiles:[],inspectFiles:[],sites:[],checks:[],results:[],badRows:[],team:'전체',charts:{}};
 const managers=[
   {name:'장정덕',role:'센터장',scope:'all'}, {name:'권오혁',role:'부장',scope:'all'},
@@ -161,26 +193,74 @@ const managers=[
 const teamList=['강서선로팀','목동선로팀','영등포선로팀'];
 const gradeRank={'특급':1,'A':2,'B':3,'C':4,'시설점검':2,'나대지':5};
 
-window.addEventListener('DOMContentLoaded',()=>{initDates();bindUploads();bindTabs();updateToday();renderFileLists();toggleViewMode();});
+window.addEventListener('DOMContentLoaded',async()=>{
+  initDates();bindUploads();bindTabs();updateToday();toggleViewMode();
+  try{await initDB();await loadFromDB();setDbStatus(true);if(state.siteFiles.length&&state.inspectFiles.length)await analyze(true);}catch(e){console.error(e);setDbStatus(false);toast('브라우저 저장소를 불러오지 못했습니다.');}
+  renderFileLists();updateDriveSummary();
+});
 function updateToday(){document.getElementById('todayPill').textContent=new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});} 
 function initDates(){const now=new Date();const day=(now.getDay()+6)%7;const monday=new Date(now);monday.setDate(now.getDate()-day);document.getElementById('startDate').value=toInputDate(monday);document.getElementById('endDate').value=toInputDate(now);} 
-function setThisWeek(){initDates();} function setToday(){const d=toInputDate(new Date());startDate.value=d;endDate.value=d;} function setLast7(){const e=new Date();const s=new Date();s.setDate(e.getDate()-6);startDate.value=toInputDate(s);endDate.value=toInputDate(e);} 
+function setThisWeek(){initDates();if(state.siteFiles.length&&state.inspectFiles.length)analyze(true);} function setToday(){const d=toInputDate(new Date());startDate.value=d;endDate.value=d;if(state.siteFiles.length&&state.inspectFiles.length)analyze(true);} function setLast7(){const e=new Date();const s=new Date();s.setDate(e.getDate()-6);startDate.value=toInputDate(s);endDate.value=toInputDate(e);if(state.siteFiles.length&&state.inspectFiles.length)analyze(true);} 
 function toInputDate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);} 
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);} 
 function bindTabs(){document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.team=btn.dataset.team;toggleViewMode();renderAll();}));}
 function toggleViewMode(){document.body.classList.toggle('manager-mode',state.team==='관리자점검');}
-function bindUploads(){setupFileInput('siteInput','siteFiles','siteFiles');setupFileInput('inspectInput','inspectFiles','inspectFiles');setupDrop('siteDrop','siteInput');setupDrop('inspectDrop','inspectInput');}
-function setupDrop(dropId,inputId){const drop=document.getElementById(dropId);const input=document.getElementById(inputId);['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',ev=>{addFiles(inputId,[...ev.dataTransfer.files]);});}
-function setupFileInput(inputId,listId,key){document.getElementById(inputId).addEventListener('change',e=>{addFiles(inputId,[...e.target.files]);e.target.value='';});}
-function addFiles(inputId,files){const key=inputId==='siteInput'?'siteFiles':'inspectFiles';const existing=new Set(state[key].map(f=>f.name+'|'+f.size));files.filter(f=>/\.xlsx?$/.test(f.name.toLowerCase())).forEach(f=>{const sig=f.name+'|'+f.size;if(!existing.has(sig)){state[key].push(f);existing.add(sig);}});renderFileLists();toast(`${files.length}개 파일을 확인했습니다.`);} 
-function removeFile(key,idx){state[key].splice(idx,1);renderFileLists();}
-function clearAllFiles(){state.siteFiles=[];state.inspectFiles=[];state.sites=[];state.checks=[];state.results=[];state.badRows=[];renderFileLists();renderAll();toast('초기화 완료');}
-function renderFileLists(){renderOneFileList('siteFiles',state.siteFiles);renderOneFileList('inspectFiles',state.inspectFiles);document.getElementById('filePill').textContent=`파일 ${state.siteFiles.length+state.inspectFiles.length}개`;}
-function renderOneFileList(id,files){const el=document.getElementById(id);el.innerHTML='';if(!files.length){el.innerHTML='<div class="empty-files">아직 추가된 파일이 없습니다.</div>';return;}files.forEach((f,i)=>{const key=id;const div=document.createElement('div');div.className='file-chip';div.innerHTML=`<span>${i+1}. ${escapeHtml(f.name)}</span><b>${formatBytes(f.size)}</b><button onclick="removeFile('${key}',${i})">삭제</button>`;el.appendChild(div);});}
+
+function initDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(STORE_NAME)){const st=d.createObjectStore(STORE_NAME,{keyPath:'id'});st.createIndex('kind','kind',{unique:false});st.createIndex('signature','signature',{unique:false});}};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error);});}
+function dbTx(mode='readonly'){return db.transaction(STORE_NAME,mode).objectStore(STORE_NAME)}
+function dbGetAll(){return new Promise((resolve,reject)=>{const r=dbTx().getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error);});}
+function dbPut(rec){return new Promise((resolve,reject)=>{const r=dbTx('readwrite').put(rec);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+function dbDelete(id){return new Promise((resolve,reject)=>{const r=dbTx('readwrite').delete(id);r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error);});}
+function dbClear(){return new Promise((resolve,reject)=>{const r=dbTx('readwrite').clear();r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error);});}
+function setDbStatus(ok){const el=document.getElementById('dbStatus');if(!el)return;el.className='db-badge'+(ok?'':' off');el.textContent=ok?'● IndexedDB 연결됨':'● IndexedDB 사용 불가';}
+function makeId(kind,file){return `${kind}:${Date.now()}:${Math.random().toString(36).slice(2,9)}:${file.name}`;}
+function signatureOf(file){return `${file.name}|${file.size}|${file.lastModified||0}`;}
+function serializeRecord(rec){return {...rec,rows:(rec.rows||[]).map(r=>({...r,date:r.date instanceof Date?r.date.toISOString():r.date,lastDate:r.lastDate instanceof Date?r.lastDate.toISOString():r.lastDate}))};}
+function reviveRecord(rec){return {...rec,rows:(rec.rows||[]).map(r=>({...r,date:r.date?new Date(r.date):null,lastDate:r.lastDate?new Date(r.lastDate):null}))};}
+async function loadFromDB(){const all=(await dbGetAll()).map(reviveRecord);state.siteFiles=all.filter(r=>r.kind==='site').sort((a,b)=>b.uploadedAt.localeCompare(a.uploadedAt));state.inspectFiles=all.filter(r=>r.kind==='inspect').sort((a,b)=>a.uploadedAt.localeCompare(b.uploadedAt));}
+
+function bindUploads(){setupFileInput('siteInput');setupFileInput('inspectInput');setupDrop('siteDrop','siteInput');setupDrop('inspectDrop','inspectInput');}
+function setupDrop(dropId,inputId){const drop=document.getElementById(dropId);['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',ev=>addFiles(inputId,[...ev.dataTransfer.files]));}
+function setupFileInput(inputId){document.getElementById(inputId).addEventListener('change',async e=>{await addFiles(inputId,[...e.target.files]);e.target.value='';});}
+async function addFiles(inputId,files){
+  const kind=inputId==='siteInput'?'site':'inspect';
+  const valid=files.filter(f=>/\.xlsx?$/.test(f.name.toLowerCase()));
+  if(!valid.length){toast('엑셀 파일만 추가할 수 있습니다.');return;}
+  loader(true);
+  try{
+    if(kind==='site'&&state.siteFiles.length){if(!confirm('기존 공사장 목록을 새 파일로 교체할까요?'))return;for(const r of state.siteFiles)await dbDelete(r.id);state.siteFiles=[];}
+    let added=0, skipped=0;
+    for(const file of valid){
+      const signature=signatureOf(file);
+      const existing=[...state.siteFiles,...state.inspectFiles].find(r=>r.signature===signature);
+      if(existing){if(!confirm(`이미 저장된 파일입니다.
+${file.name}
+
+기존 데이터를 교체할까요?`)){skipped++;continue;}await dbDelete(existing.id);state[existing.kind==='site'?'siteFiles':'inspectFiles']=state[existing.kind==='site'?'siteFiles':'inspectFiles'].filter(r=>r.id!==existing.id);}
+      const rows=kind==='site'?await parseSiteFile(file):await parseCheckFile(file);
+      const rec={id:makeId(kind,file),kind,name:file.name,size:file.size,lastModified:file.lastModified||Date.now(),signature,uploadedAt:new Date().toISOString(),rowCount:rows.length,rows};
+      await dbPut(rec);state[kind==='site'?'siteFiles':'inspectFiles'].push(rec);added++;
+    }
+    state.siteFiles.sort((a,b)=>b.uploadedAt.localeCompare(a.uploadedAt));state.inspectFiles.sort((a,b)=>a.uploadedAt.localeCompare(b.uploadedAt));
+    renderFileLists();updateDriveSummary();
+    if(state.siteFiles.length&&state.inspectFiles.length)await analyze(true);
+    toast(`${added}개 저장 완료${skipped?` · ${skipped}개 건너뜀`:''}`);
+  }catch(e){console.error(e);toast('파일 저장 중 오류가 발생했습니다.');}finally{loader(false);}
+}
+async function removeFile(key,idx){const rec=state[key][idx];if(!rec)return;if(!confirm(`${rec.name}을 삭제할까요?
+이 파일에서 저장된 데이터도 함께 삭제됩니다.`))return;await dbDelete(rec.id);state[key].splice(idx,1);renderFileLists();updateDriveSummary();if(state.siteFiles.length&&state.inspectFiles.length)await analyze(true);else{state.sites=[];state.checks=[];state.results=[];renderAll();}toast('삭제 완료');}
+async function clearAllFiles(){if(!confirm('브라우저에 저장된 공사장 목록과 점검결과를 모두 삭제할까요?\n이 작업은 되돌릴 수 없습니다.'))return;await dbClear();state.siteFiles=[];state.inspectFiles=[];state.sites=[];state.checks=[];state.results=[];state.badRows=[];renderFileLists();updateDriveSummary();renderAll();toast('전체 초기화 완료');}
+function renderFileLists(){renderOneFileList('siteFiles',state.siteFiles);renderOneFileList('inspectFiles',state.inspectFiles);document.getElementById('filePill').textContent=`저장 파일 ${state.siteFiles.length+state.inspectFiles.length}개`;}
+function renderOneFileList(id,files){const el=document.getElementById(id);el.innerHTML='';if(!files.length){el.innerHTML='<div class="empty-files">아직 저장된 파일이 없습니다.</div>';return;}files.forEach((f,i)=>{const div=document.createElement('div');div.className='file-chip';div.innerHTML=`<div class="file-main"><span>${i+1}. ${escapeHtml(f.name)}</span><div class="file-sub">${f.rowCount.toLocaleString()}행 · ${new Date(f.uploadedAt).toLocaleString('ko-KR')}</div></div><div class="file-meta"><span class="mini-tag ${f.kind==='inspect'?'green':''}">${f.kind==='site'?'마스터':'점검'}</span><b>${formatBytes(f.size)}</b></div><div class="chip-actions"><button onclick="removeFile('${id}',${i})">삭제</button></div>`;el.appendChild(div);});}
+function updateDriveSummary(){
+  const siteRows=state.siteFiles.reduce((a,b)=>a+(b.rowCount||0),0),checkRows=state.inspectFiles.reduce((a,b)=>a+(b.rowCount||0),0);setText('driveSiteFiles',state.siteFiles.length);setText('driveSiteRows',`${siteRows.toLocaleString()}개 공사장`);setText('driveCheckFiles',state.inspectFiles.length);setText('driveCheckRows',`${checkRows.toLocaleString()}건 점검`);const all=[...state.siteFiles,...state.inspectFiles].sort((a,b)=>b.uploadedAt.localeCompare(a.uploadedAt));setText('driveUpdated',all.length?new Date(all[0].uploadedAt).toLocaleDateString('ko-KR'):'-');updateStorageEstimate();}
+async function updateStorageEstimate(){if(!navigator.storage?.estimate){setText('driveStorage','지원 안 됨');return;}const est=await navigator.storage.estimate();const used=est.usage||0,quota=est.quota||1;setText('driveStorage',`${formatBytes(used)} / ${formatBytes(quota)}`);const pct=Math.min(100,used/quota*100);document.getElementById('storageBar').style.width=pct+'%';}
+async function exportBackup(){try{const records=(await dbGetAll()).map(serializeRecord);const payload={app:'BBITT LAB Dashboard',version:1,exportedAt:new Date().toISOString(),records};const blob=new Blob([JSON.stringify(payload)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`BBITT_LAB_백업_${toInputDate(new Date())}.json`;a.click();URL.revokeObjectURL(url);toast('백업 파일을 저장했습니다.');}catch(e){console.error(e);toast('백업 생성에 실패했습니다.');}}
+async function importBackup(file){if(!file)return;if(!confirm('현재 브라우저 데이터를 백업 파일의 내용으로 교체할까요?'))return;loader(true);try{const payload=JSON.parse(await file.text());if(!payload||!Array.isArray(payload.records))throw new Error('Invalid backup');await dbClear();for(const raw of payload.records){const rec=reviveRecord(raw);await dbPut(rec);}await loadFromDB();renderFileLists();updateDriveSummary();if(state.siteFiles.length&&state.inspectFiles.length)await analyze(true);toast('백업 복원 완료');}catch(e){console.error(e);toast('유효한 BBITT LAB 백업 파일이 아닙니다.');}finally{loader(false);}}
 function formatBytes(bytes){if(bytes<1024)return bytes+'B';if(bytes<1024*1024)return (bytes/1024).toFixed(1)+'KB';return (bytes/1024/1024).toFixed(1)+'MB';}
 function escapeHtml(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
 
-async function analyze(){if(!state.siteFiles.length||!state.inspectFiles.length){toast('사외공사장 목록과 점검결과 파일을 모두 추가해주세요.');return;}loader(true);try{state.sites=[];state.checks=[];for(const f of state.siteFiles){state.sites.push(...await parseSiteFile(f));}for(const f of state.inspectFiles){state.checks.push(...await parseCheckFile(f));}state.sites=dedupeSites(state.sites);state.checks=state.checks.filter(c=>inDateRange(c.date));computeResults();renderAll();toast('분석 완료');}catch(e){console.error(e);toast('분석 중 오류가 발생했습니다. 콘솔을 확인해주세요.');}finally{loader(false);}}
+async function analyze(silent=false){if(!state.siteFiles.length||!state.inspectFiles.length){if(!silent)toast('사외공사장 목록과 점검결과 파일을 모두 추가해주세요.');return;}loader(true);try{state.sites=dedupeSites(state.siteFiles.flatMap(r=>r.rows||[]));state.checks=state.inspectFiles.flatMap(r=>r.rows||[]).map(c=>({...c,date:c.date instanceof Date?c.date:new Date(c.date)})).filter(c=>c.id&&c.date&&!isNaN(c.date)&&inDateRange(c.date));computeResults();renderAll();if(!silent)toast('저장된 데이터 분석 완료');}catch(e){console.error(e);toast('분석 중 오류가 발생했습니다. 콘솔을 확인해주세요.');}finally{loader(false);}}
 function loader(on){document.getElementById('loader').classList.toggle('show',on);} 
 async function readWorkbook(file){const buf=await file.arrayBuffer();return XLSX.read(buf,{type:'array',cellDates:true});}
 async function parseSiteFile(file){const wb=await readWorkbook(file);let rows=[];for(const sh of wb.SheetNames){const arr=XLSX.utils.sheet_to_json(wb.Sheets[sh],{header:1,defval:'',raw:false,dateNF:'yyyy-mm-dd hh:mm:ss'});const parsed=parseTable(arr);rows.push(...parsed.map(r=>normalSite(r,file.name)));}return rows.filter(r=>r.id&&r.team&&r.status.includes('진행'));
@@ -191,11 +271,12 @@ function parseTable(arr){let headerIdx=arr.findIndex(row=>row.some(v=>String(v).
 function normalizeHeader(v){return String(v??'').replace(/\s/g,'').trim();}
 function pickExact(o,names){const keys=Object.keys(o);for(const n of names){const target=normalizeHeader(n);const k=keys.find(key=>normalizeHeader(key)===target);if(k!==undefined)return o[k];}return '';}
 function pick(o,names){const exact=pickExact(o,names);if(exact!==''&&exact!==undefined&&exact!==null)return exact;for(const n of names){const target=normalizeHeader(n);const k=Object.keys(o).find(key=>normalizeHeader(key).includes(target));if(k)return o[k];}return '';}
+function pickFirstNotEmpty(o,names){const keys=Object.keys(o);for(const n of names){const target=normalizeHeader(n);const k=keys.find(key=>normalizeHeader(key)===target);if(k!==undefined){const value=o[k];if(value!==undefined&&value!==null&&String(value).trim()!=='')return value;}}for(const n of names){const target=normalizeHeader(n);const k=keys.find(key=>normalizeHeader(key).includes(target));if(k!==undefined){const value=o[k];if(value!==undefined&&value!==null&&String(value).trim()!=='')return value;}}return '';}
 function normalSite(r,source){const name=String(pick(r,['공사장명'])||'').trim();return {source,id:String(pick(r,['관리번호'])||'').trim(),name,team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),status:String(pick(r,['진행상태'])||''),address:String(pick(r,['공사장주소','주소'])||''),manager:String(pick(r,['담당자'])||''),type:String(pick(r,['공사종류'])||'')};}
 function normalCheck(r,source){
   // '구분' 열은 '공사구분'과 이름이 겹치므로 반드시 정확히 일치하는 헤더를 우선 사용합니다.
   const rawType=String(pickExact(r,['구분','점검유형','점검 구분','점검종류'])||pick(r,['점검유형','점검 구분','점검종류'])||'').trim();
-  const date=parseDate(pick(r,['점검종료시간','점검시작시간','점검일시','점검일','굴착등록일','공사장등록일']));
+  const date=parseDate(pickFirstNotEmpty(r,['점검종료시간','점검시작시간','점검일시','점검일','굴착등록일','공사장등록일']));
   return {source,id:String(pick(r,['관리번호'])||'').trim(),name:String(pick(r,['공사장명'])||'').trim(),team:normalizeTeam(pick(r,['팀'])),grade:normalizeGrade(pick(r,['등급'])),type:normalizeCheckType(rawType),rawType,person:String(pick(r,['점검자/입회자','점검자','입회자','책임입회자'])||'').trim(),date,address:String(pick(r,['주소'])||'')};
 }
 function parseDate(v){if(!v)return null;if(v instanceof Date&&!isNaN(v))return v;let s=String(v).trim();let m=s.match(/(\d{4})[-.\/년 ]\s*(\d{1,2})[-.\/월 ]\s*(\d{1,2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3]);return null;}
