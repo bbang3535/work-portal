@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BBITT LAB · 사외공사장 운영 인텔리전스 v3.5</title>
+<title>BBITT LAB · 사외공사장 운영 인텔리전스 v3.5.1</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
@@ -103,7 +103,7 @@ body{background:linear-gradient(180deg,#f8faff 0,#f4f7fb 55%,#f7f9fc 100%);color
 @media(max-width:720px){.main{padding:14px}.primary-kpis,.secondary-kpis,.executive-alerts{grid-template-columns:1fr}.filter-panel .controls{grid-template-columns:1fr}.hero-grid{grid-template-columns:1fr}.hero-stat{grid-template-columns:repeat(3,1fr)}}
 
 /* =========================================================
-   BBITT LAB V3.5 · Premium Operation Intelligence Design
+   BBITT LAB V3.5.1 · Premium Operation Intelligence Design
    ========================================================= */
 :root{
   --bg:#f3f6fb;
@@ -696,7 +696,10 @@ function filteredChecks(){
 function renderAll(){toggleViewMode();if(state.team==='관리자점검'){document.getElementById('viewMode').value='manager';}refreshFilterOptions();const arr=filteredResults();const checks=filteredChecks();const good=arr.filter(r=>r.good).length,bad=arr.length-good;const rate=arr.length?Math.round(good/arr.length*100):0;const finalGood=arr.filter(r=>r.finalGood).length;const finalRate=arr.length?Math.round(finalGood/arr.length*100):0;const round=checks.filter(c=>c.type==='순회').length,attend=checks.filter(c=>c.type==='입회').length,admin=checks.filter(c=>c.type==='관리자점검').length;const accepted=arr.reduce((a,b)=>a+b.accepted,0);const uninspected=arr.filter(r=>r.accepted===0).length;const priority=arr.filter(r=>!r.good&&(r.grade==='특급'||r.grade==='A')).length;const managerPending=getManagerPendingCount();
  setText('goodRate',rate+'%');setText('rateSub',`${good}/${arr.length}개 양호 · ${bad}개 미흡`);document.getElementById('goodBar').style.width=rate+'%';setText('totalSites',arr.length);setText('goodSites',good);setText('badSites',bad);setText('acceptedDays',accepted);setText('roundCount',round);setText('attendCount',attend);setText('adminCount',admin);setText('staffTotal',round+attend);setText('finalRate',finalRate+'%');setText('heroSites',arr.length);setText('heroGood',good);setText('heroBad',bad);setText('badCountBadge',bad+'건');setText('matrixBadge',arr.length+'건');setText('priorityCount',priority);setText('uninspectedCount',uninspected);setText('managerPendingCount',managerPending);setText('matchedCheckCount',checks.length);
  renderCharts(arr,checks);renderOverviewDonut(good,bad);renderStaff(checks);renderManagers();renderBadTable();renderMatrix(arr);renderInsights(arr,checks,rate,finalRate);renderExecutiveExperience(arr,checks,rate);}
-function setText(id,v){document.getElementById(id).textContent=v;}
+function setText(id,v){
+  const el=document.getElementById(id);
+  if(el) el.textContent=v;
+}
 function renderCharts(arr,checks){const gradeGroups={};arr.forEach(r=>{gradeGroups[r.category]??={good:0,bad:0};gradeGroups[r.category][r.good?'good':'bad']++;});const labels=Object.keys(gradeGroups).sort((a,b)=>(gradeRank[a]||9)-(gradeRank[b]||9));drawChart('gradeChart','bar',{labels,datasets:[{label:'양호',data:labels.map(l=>gradeGroups[l].good),backgroundColor:'#10b981',borderRadius:8},{label:'미흡',data:labels.map(l=>gradeGroups[l].bad),backgroundColor:'#ef4444',borderRadius:8}]},{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}});
  const teamData=teamList.map(t=>{const rows=state.results.filter(r=>r.team===t);return rows.length?Math.round(rows.filter(r=>r.good).length/rows.length*100):0;});drawChart('teamChart','bar',{labels:teamList.map(t=>t.replace('선로팀','')),datasets:[{label:'양호율',data:teamData,backgroundColor:'#2563eb',borderRadius:10}]},{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}},x:{grid:{display:false}}}});
  const staffMap={};checks.filter(c=>c.type!=='관리자점검').forEach(c=>{const p=c.person||'미지정';staffMap[p]??={round:0,attend:0};if(c.type==='순회')staffMap[p].round++;if(c.type==='입회')staffMap[p].attend++;});const staff=Object.entries(staffMap).map(([name,v])=>({name,...v,total:v.round+v.attend})).sort((a,b)=>b.total-a.total).slice(0,10);drawChart('staffChart','bar',{labels:staff.map(s=>s.name),datasets:[{label:'순회',data:staff.map(s=>s.round),backgroundColor:'#0ea5e9',borderRadius:8},{label:'책임입회',data:staff.map(s=>s.attend),backgroundColor:'#7c3aed',borderRadius:8}]},{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{beginAtZero:true,ticks:{precision:0}},y:{grid:{display:false}}}});
