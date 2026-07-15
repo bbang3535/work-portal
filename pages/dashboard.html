@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BBITT LAB · 사외공사장 운영 인텔리전스 v3.5.1</title>
+<title>BBITT LAB V4 · 사외공사장 운영 대시보드</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
@@ -343,6 +343,116 @@ body.dark .command-button{background:#172338;color:#dbe5f3;border-color:#2a3a53}
   .executive-alerts{grid-template-columns:1fr}
   .dashboard-grid{grid-template-columns:1fr}
 }
+
+/* =========================================================
+   BBITT LAB V4 · Daily / Weekly Operation Experience
+   ========================================================= */
+:root{
+  --v4-blue:#2f6bff;--v4-green:#14b86e;--v4-red:#ef5350;
+  --v4-orange:#f59e0b;--v4-purple:#7c5cff;--v4-cyan:#10aee8;
+}
+.mode-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin:0 0 12px;padding:12px 15px;border:1px solid var(--line);
+  border-radius:16px;background:var(--surface);box-shadow:var(--shadow)
+}
+.mode-banner-main{display:flex;align-items:center;gap:10px;min-width:0}
+.mode-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#eaf1ff,#f1eaff);font-size:18px}
+.mode-title{font-size:12px;font-weight:950}
+.mode-copy{font-size:10px;color:var(--muted);margin-top:3px}
+.mode-chip{padding:7px 10px;border-radius:999px;font-size:9.5px;font-weight:900;
+  background:#edf4ff;color:#2459d8;white-space:nowrap}
+
+.daily-only{display:none}
+body.daily-mode .daily-only{display:block}
+body.daily-mode .regular-only{display:none!important}
+body.daily-mode .hero-score-card.wide .hero-score-label{font-size:0}
+body.daily-mode .hero-score-card.wide .hero-score-label:after{content:"오늘 점검 완료율";font-size:9.5px}
+body.daily-mode .hero-score-card:nth-child(2) .hero-score-label{font-size:0}
+body.daily-mode .hero-score-card:nth-child(2) .hero-score-label:after{content:"점검 완료 공사장";font-size:9.5px}
+body.daily-mode .hero-score-card:nth-child(3) .hero-score-label{font-size:0}
+body.daily-mode .hero-score-card:nth-child(3) .hero-score-label:after{content:"점검 미실시";font-size:9.5px}
+
+.daily-kpis{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px
+}
+.daily-card{
+  position:relative;overflow:hidden;cursor:pointer;background:var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow);
+  transition:.22s ease;min-height:120px
+}
+.daily-card:hover,.daily-card.active{transform:translateY(-3px);border-color:#a9c3ff;box-shadow:0 16px 38px rgba(47,107,255,.14)}
+.daily-card.active{outline:3px solid rgba(47,107,255,.10)}
+.daily-card:after{content:"";position:absolute;width:90px;height:90px;right:-28px;top:-34px;border-radius:50%;background:currentColor;opacity:.07}
+.daily-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.daily-card-icon{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#eff4ff;font-size:16px}
+.daily-card-label{font-size:10.5px;color:var(--muted);font-weight:850}
+.daily-card-value{font-size:31px;font-weight:950;letter-spacing:-.04em;margin-top:8px}
+.daily-card-note{font-size:9.5px;color:var(--muted);margin-top:4px}
+.daily-card.complete{color:var(--v4-blue)}
+.daily-card.missing{color:var(--v4-red)}
+.daily-card.admin{color:var(--v4-purple)}
+.daily-card.attend{color:var(--v4-green)}
+
+.daily-detail{
+  background:var(--surface);border:1px solid var(--line);border-radius:18px;
+  box-shadow:var(--shadow);padding:15px;margin-bottom:12px
+}
+.daily-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+.daily-detail-title{font-size:14px;font-weight:950}
+.daily-detail-sub{font-size:9.5px;color:var(--muted);margin-top:3px}
+.daily-actions{display:flex;gap:6px;flex-wrap:wrap}
+.copy-btn{height:33px;padding:0 11px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:10px;font-weight:850;cursor:pointer}
+.copy-btn.primary{background:#2f6bff;border-color:#2f6bff;color:#fff}
+.copy-btn:hover{transform:translateY(-1px)}
+.summary-cell{max-width:500px;min-width:280px}
+.summary-text{font-size:10px;line-height:1.45;color:#475467;white-space:normal}
+.row-copy{height:27px;padding:0 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-size:9px;font-weight:850;cursor:pointer}
+.empty-state{text-align:center;padding:34px 15px;color:var(--muted);font-size:11px}
+
+.status-summary{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:12px
+}
+.status-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px;box-shadow:var(--shadow)}
+.status-card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.status-card-label{font-size:10px;color:var(--muted);font-weight:850}
+.status-card-dot{width:9px;height:9px;border-radius:50%}
+.status-card-value{font-size:25px;font-weight:950;margin-top:6px}
+.status-card-note{font-size:9px;color:var(--muted);margin-top:2px}
+.status-card.good .status-card-dot{background:#14b86e}.status-card.progress .status-card-dot{background:#3b82f6}
+.status-card.warning .status-card-dot{background:#f59e0b}.status-card.bad .status-card-dot{background:#ef5350}
+
+.trend-panel{
+  background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px;
+  box-shadow:var(--shadow);margin-bottom:12px
+}
+.trend-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:10px}
+.trend-item{padding:12px;border-radius:14px;background:var(--surface2);border:1px solid var(--line)}
+.trend-label{font-size:9.5px;color:var(--muted);font-weight:850}
+.trend-value{display:flex;align-items:baseline;gap:6px;margin-top:5px}
+.trend-current{font-size:22px;font-weight:950}
+.trend-delta{font-size:9.5px;font-weight:900;padding:4px 6px;border-radius:999px}
+.trend-delta.up{background:#ecfdf3;color:#027a48}
+.trend-delta.down{background:#fff1f0;color:#b42318}
+.trend-delta.flat{background:#f2f4f7;color:#667085}
+.trend-note{font-size:8.8px;color:var(--muted);margin-top:4px}
+.trend-history{height:7px;background:#e9edf4;border-radius:999px;overflow:hidden;margin-top:9px}
+.trend-history i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#2f6bff,#7c5cff)}
+
+body.dark .mode-banner,body.dark .daily-card,body.dark .daily-detail,
+body.dark .status-card,body.dark .trend-panel,body.dark .copy-btn,body.dark .row-copy{background:var(--surface);border-color:var(--line);color:var(--ink)}
+body.dark .trend-item{background:var(--surface2)}
+body.dark .summary-text{color:#c4cedd}
+
+@media(max-width:1100px){
+  .daily-kpis,.status-summary,.trend-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+  .daily-kpis,.status-summary,.trend-grid{grid-template-columns:1fr}
+  .daily-detail-toolbar{align-items:flex-start;flex-direction:column}
+  .summary-cell{min-width:220px}
+}
 </style>
 </head>
 <body>
@@ -381,6 +491,50 @@ body.dark .command-button{background:#172338;color:#dbe5f3;border-color:#2a3a53}
 <div class="panel-head"><div><div class="panel-title">조회 및 분석 조건</div><div class="panel-caption">조회 종료일 기준 진행 양호율과 최종 목표 달성률을 함께 계산합니다.</div></div><button class="btn ghost" onclick="clearAllFiles()">전체 초기화</button></div>
 <div class="controls"><div class="field"><label>시작일</label><input id="startDate" onchange="analyze(true)" type="date"/></div><div class="field"><label>종료일</label><input id="endDate" onchange="analyze(true)" type="date"/></div><div class="field"><label>판정 방식</label><select id="judgeMode" onchange="analyze(true)"><option value="progress">진행 기준</option><option value="final">최종 기준</option></select></div><div class="field"><label>표시 기준</label><select id="viewMode" onchange="if(this.value==='manager'){document.querySelector('.tab[data-team=\'관리자점검\']')?.click();}"><option value="all">전체 공사장</option><option value="bad">미흡 중심</option><option value="manager">관리자점검</option></select></div><button class="btn primary" onclick="analyze()">분석하기</button></div>
 <div class="quick"><button class="btn" onclick="setThisWeek()">이번 주</button><button class="btn" onclick="setToday()">오늘</button><button class="btn" onclick="setLast7()">최근 7일</button></div>
+</section><section class="mode-banner fade-in" id="modeBanner">
+<div class="mode-banner-main">
+<div class="mode-icon" id="modeIcon">◷</div>
+<div>
+<div class="mode-title" id="modeTitle">조회 방식 확인 중</div>
+<div class="mode-copy" id="modeCopy">날짜 범위에 맞춰 표시 방식을 자동 전환합니다.</div>
+</div>
+</div>
+<span class="mode-chip" id="modeChip">자동 판정</span>
+</section><section class="trend-panel fade-in" id="trendPanel">
+<div class="panel-head">
+<div>
+<div class="panel-title">변화 및 추세</div>
+<div class="panel-caption" id="trendCaption">같은 브라우저에 저장된 이전 분석 결과와 비교합니다.</div>
+</div>
+<button class="command-button" onclick="clearTrendHistory()" type="button">추세 초기화</button>
+</div>
+<div class="trend-grid">
+<div class="trend-item">
+<div class="trend-label">양호율</div>
+<div class="trend-value"><span class="trend-current" id="trendRate">0%</span><span class="trend-delta flat" id="trendRateDelta">기준 없음</span></div>
+<div class="trend-note">직전 저장 결과 대비</div><div class="trend-history"><i id="trendRateBar"></i></div>
+</div>
+<div class="trend-item">
+<div class="trend-label">미흡 공사장</div>
+<div class="trend-value"><span class="trend-current" id="trendBad">0</span><span class="trend-delta flat" id="trendBadDelta">기준 없음</span></div>
+<div class="trend-note">감소할수록 개선</div><div class="trend-history"><i id="trendBadBar"></i></div>
+</div>
+<div class="trend-item">
+<div class="trend-label">관리자점검</div>
+<div class="trend-value"><span class="trend-current" id="trendAdmin">0</span><span class="trend-delta flat" id="trendAdminDelta">기준 없음</span></div>
+<div class="trend-note">조회 기간 내 매칭 실적</div><div class="trend-history"><i id="trendAdminBar"></i></div>
+</div>
+<div class="trend-item">
+<div class="trend-label">책임입회</div>
+<div class="trend-value"><span class="trend-current" id="trendAttend">0</span><span class="trend-delta flat" id="trendAttendDelta">기준 없음</span></div>
+<div class="trend-note">조회 기간 내 매칭 실적</div><div class="trend-history"><i id="trendAttendBar"></i></div>
+</div>
+</div>
+</section><section class="status-summary regular-only fade-in" id="statusSummary">
+<div class="status-card good"><div class="status-card-top"><span class="status-card-label">양호</span><span class="status-card-dot"></span></div><div class="status-card-value" id="statusGood">0</div><div class="status-card-note">기준 달성</div></div>
+<div class="status-card progress"><div class="status-card-top"><span class="status-card-label">진행중</span><span class="status-card-dot"></span></div><div class="status-card-value" id="statusProgress">0</div><div class="status-card-note">평가 기간 진행 중</div></div>
+<div class="status-card warning"><div class="status-card-top"><span class="status-card-label">주의</span><span class="status-card-dot"></span></div><div class="status-card-value" id="statusWarning">0</div><div class="status-card-note">현재 추세상 미달 가능</div></div>
+<div class="status-card bad"><div class="status-card-top"><span class="status-card-label">미흡</span><span class="status-card-dot"></span></div><div class="status-card-value" id="statusBad">0</div><div class="status-card-note">평가 종료 후 기준 미달</div></div>
 </section><section class="panel org-panel">
 <div class="panel-head"><div><div class="panel-title">조직 선택</div><div class="panel-caption">강서선로부 전체 또는 각 팀 기준으로 지표를 전환합니다.</div></div></div>
 <div class="tabs" id="teamTabs">
@@ -417,6 +571,32 @@ body.dark .command-button{background:#172338;color:#dbe5f3;border-color:#2a3a53}
 <div class="hero-score-note">특급·A급 미흡</div>
 </div>
 </div>
+</div>
+</section><section class="daily-only fade-in" id="dailySection">
+<div class="daily-kpis">
+<article class="daily-card complete active" data-daily="complete" onclick="selectDailyCategory('complete')">
+<div class="daily-card-head"><span class="daily-card-label">점검 완료</span><span class="daily-card-icon">✓</span></div>
+<div class="daily-card-value" id="dailyComplete">0</div><div class="daily-card-note">오늘 점검 기록이 있는 공사장</div>
+</article>
+<article class="daily-card missing" data-daily="missing" onclick="selectDailyCategory('missing')">
+<div class="daily-card-head"><span class="daily-card-label">점검 미실시</span><span class="daily-card-icon">!</span></div>
+<div class="daily-card-value" id="dailyMissing">0</div><div class="daily-card-note">오늘 점검 기록이 없는 공사장</div>
+</article>
+<article class="daily-card admin" data-daily="admin" onclick="selectDailyCategory('admin')">
+<div class="daily-card-head"><span class="daily-card-label">관리자점검</span><span class="daily-card-icon">♛</span></div>
+<div class="daily-card-value" id="dailyAdmin">0</div><div class="daily-card-note">오늘 관리자점검 실적</div>
+</article>
+<article class="daily-card attend" data-daily="attend" onclick="selectDailyCategory('attend')">
+<div class="daily-card-head"><span class="daily-card-label">책임입회</span><span class="daily-card-icon">◆</span></div>
+<div class="daily-card-value" id="dailyAttend">0</div><div class="daily-card-note">오늘 책임입회 실적</div>
+</article>
+</div>
+<div class="daily-detail">
+<div class="daily-detail-toolbar">
+<div><div class="daily-detail-title" id="dailyDetailTitle">점검 완료 공사장</div><div class="daily-detail-sub" id="dailyDetailSub">카드를 선택하면 해당 공사장 목록이 표시됩니다.</div></div>
+<div class="daily-actions"><button class="copy-btn" onclick="copyDailySummary()" type="button">전체 요약 복사</button><button class="copy-btn primary" onclick="downloadDailyCsv()" type="button">CSV 저장</button></div>
+</div>
+<div class="table-wrap"><table class="data-table" id="dailyTable"></table></div>
 </div>
 </section><section class="kpis regular-only primary-kpis" id="kpiSection">
 <div class="kpi score"><div class="metric-head"><div class="lab">진행 기준 양호율</div><span class="metric-icon">◎</span></div><div class="val" id="goodRate">0%</div><div class="bar"><i id="goodBar"></i></div><div class="sub" id="rateSub">파일 업로드 후 분석해주세요.</div><div aria-hidden="true" class="metric-spark">
@@ -695,7 +875,7 @@ function filteredChecks(){
 }
 function renderAll(){toggleViewMode();if(state.team==='관리자점검'){document.getElementById('viewMode').value='manager';}refreshFilterOptions();const arr=filteredResults();const checks=filteredChecks();const good=arr.filter(r=>r.good).length,bad=arr.length-good;const rate=arr.length?Math.round(good/arr.length*100):0;const finalGood=arr.filter(r=>r.finalGood).length;const finalRate=arr.length?Math.round(finalGood/arr.length*100):0;const round=checks.filter(c=>c.type==='순회').length,attend=checks.filter(c=>c.type==='입회').length,admin=checks.filter(c=>c.type==='관리자점검').length;const accepted=arr.reduce((a,b)=>a+b.accepted,0);const uninspected=arr.filter(r=>r.accepted===0).length;const priority=arr.filter(r=>!r.good&&(r.grade==='특급'||r.grade==='A')).length;const managerPending=getManagerPendingCount();
  setText('goodRate',rate+'%');setText('rateSub',`${good}/${arr.length}개 양호 · ${bad}개 미흡`);document.getElementById('goodBar').style.width=rate+'%';setText('totalSites',arr.length);setText('goodSites',good);setText('badSites',bad);setText('acceptedDays',accepted);setText('roundCount',round);setText('attendCount',attend);setText('adminCount',admin);setText('staffTotal',round+attend);setText('finalRate',finalRate+'%');setText('heroSites',arr.length);setText('heroGood',good);setText('heroBad',bad);setText('badCountBadge',bad+'건');setText('matrixBadge',arr.length+'건');setText('priorityCount',priority);setText('uninspectedCount',uninspected);setText('managerPendingCount',managerPending);setText('matchedCheckCount',checks.length);
- renderCharts(arr,checks);renderOverviewDonut(good,bad);renderStaff(checks);renderManagers();renderBadTable();renderMatrix(arr);renderInsights(arr,checks,rate,finalRate);renderExecutiveExperience(arr,checks,rate);}
+ renderCharts(arr,checks);renderOverviewDonut(good,bad);renderStaff(checks);renderManagers();renderBadTable();renderMatrix(arr);renderInsights(arr,checks,rate,finalRate);renderExecutiveExperience(arr,checks,rate);renderModePresentation(arr,checks,rate);}
 function setText(id,v){
   const el=document.getElementById(id);
   if(el) el.textContent=v;
@@ -914,6 +1094,7 @@ function updateTaskProgress(){
   if(txt)txt.textContent=pct+'%';
 }
 function renderExecutiveExperience(arr,checks,rate){
+  if(isDailyRange()){return;}
   const urgent=arr.filter(r=>!r.good&&(r.grade==='특급'||r.grade==='A')).length;
   const zero=arr.filter(r=>r.accepted===0).length;
   const bad=arr.filter(r=>!r.good);
@@ -958,6 +1139,178 @@ function renderExecutiveExperience(arr,checks,rate){
   if(cs)cs.textContent=arr.length?`공사장 ${arr.length}개 · 매칭 실적 ${checks.length}건 · 최근 분석 ${new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}`:'저장된 공사장 목록과 점검결과를 불러오면 자동으로 현황이 표시됩니다.';
 }
 function setTextSafe(id,value){const el=document.getElementById(id);if(el)el.textContent=value;}
+
+/* =========================================================
+   BBITT LAB V4 · Mode / Daily Detail / Trend Engine
+   ========================================================= */
+state.dailyCategory='complete';
+state.dailyRows=[];
+
+function isDailyRange(){
+  return Boolean(startDate?.value && endDate?.value && startDate.value===endDate.value);
+}
+function getRangeDays(){
+  if(!startDate.value||!endDate.value)return 0;
+  return Math.max(1,Math.round((new Date(endDate.value)-new Date(startDate.value))/86400000)+1);
+}
+function isCurrentWeekOpen(){
+  const end=new Date(endDate.value+'T23:59:59');
+  const today=new Date();
+  return end>=today && today.getDay()!==0 && today.getDay()!==6;
+}
+function getEvaluationStatus(row){
+  if(row.accepted>=row.baseRequired)return 'good';
+  const open=isCurrentWeekOpen();
+  if(!open)return 'bad';
+  const end=new Date(endDate.value+'T00:00:00');
+  const weekday=Math.max(1,Math.min(5,end.getDay()||5));
+  const expected=Math.ceil(row.baseRequired*(weekday/5));
+  if(row.accepted>=expected)return 'progress';
+  if(row.accepted>=Math.max(0,expected-1))return 'warning';
+  return weekday<=2?'progress':'warning';
+}
+function renderModePresentation(arr,checks,rate){
+  const daily=isDailyRange();
+  document.body.classList.toggle('daily-mode',daily);
+  const title=document.getElementById('modeTitle'),copy=document.getElementById('modeCopy'),chip=document.getElementById('modeChip'),icon=document.getElementById('modeIcon');
+  if(daily){
+    if(title)title.textContent='당일 운영 조회';
+    if(copy)copy.textContent='양호·미흡을 평가하지 않고 오늘 수행된 점검과 미실시 공사장을 확인합니다.';
+    if(chip)chip.textContent='일일 현황';
+    if(icon)icon.textContent='☀';
+    renderDailyDashboard(arr,checks);
+  }else{
+    const days=getRangeDays();
+    if(title)title.textContent=days<=7?'주간 기준 평가':'주차 단위 누적 평가';
+    if(copy)copy.textContent=days<=7?'월~금 점검 기준과 현재 진행 시점을 반영해 양호·진행중·주의·미흡을 구분합니다.':'선택한 기간의 점검 실적을 주간 기준으로 해석해 관리자 현황을 제공합니다.';
+    if(chip)chip.textContent=days<=7?'주간 판정':'기간 판정';
+    if(icon)icon.textContent='◷';
+    renderStatusSummary(arr);
+  }
+  renderTrendCards(arr,checks,rate,daily);
+}
+function renderStatusSummary(arr){
+  const counts={good:0,progress:0,warning:0,bad:0};
+  arr.forEach(r=>counts[getEvaluationStatus(r)]++);
+  setText('statusGood',counts.good);setText('statusProgress',counts.progress);setText('statusWarning',counts.warning);setText('statusBad',counts.bad);
+}
+function getDailyData(arr,checks){
+  const byId=new Map();
+  checks.forEach(c=>{if(!byId.has(c.id))byId.set(c.id,[]);byId.get(c.id).push(c);});
+  const complete=[],missing=[],admin=[],attend=[];
+  arr.forEach(site=>{
+    const siteChecks=byId.get(site.id)||[];
+    if(siteChecks.length)complete.push({...site,siteChecks});
+    else missing.push({...site,siteChecks:[]});
+    siteChecks.filter(c=>c.type==='관리자점검').forEach(c=>admin.push({...site,check:c,siteChecks:[c]}));
+    siteChecks.filter(c=>c.type==='입회').forEach(c=>attend.push({...site,check:c,siteChecks:[c]}));
+  });
+  return {complete,missing,admin,attend};
+}
+function renderDailyDashboard(arr,checks){
+  const daily=getDailyData(arr,checks);
+  state.dailyData=daily;
+  setText('dailyComplete',daily.complete.length);setText('dailyMissing',daily.missing.length);setText('dailyAdmin',daily.admin.length);setText('dailyAttend',daily.attend.length);
+  const pct=arr.length?Math.round(daily.complete.length/arr.length*100):0;
+  setText('heroRate',pct+'%');setText('heroRateNote',`${daily.complete.length}/${arr.length}개 공사장 점검`);
+  setText('heroSites',daily.complete.length);setText('heroUrgent',daily.missing.length);
+  const brief=document.getElementById('aiBriefing');
+  if(brief)brief.textContent=`오늘 점검 완료 ${daily.complete.length}개, 미실시 ${daily.missing.length}개입니다. 관리자점검 ${daily.admin.length}건, 책임입회 ${daily.attend.length}건이 확인됩니다.`;
+  selectDailyCategory(state.dailyCategory||'complete',false);
+}
+function selectDailyCategory(category,scroll=true){
+  state.dailyCategory=category;
+  document.querySelectorAll('.daily-card').forEach(x=>x.classList.toggle('active',x.dataset.daily===category));
+  const titles={complete:'점검 완료 공사장',missing:'점검 미실시 공사장',admin:'오늘 관리자점검',attend:'오늘 책임입회'};
+  const subs={complete:'같은 공사장에 여러 점검유형이 있어도 공사장 1건으로 표시합니다.',missing:'등록관리 공사장 중 오늘 점검기록이 없는 대상입니다.',admin:'오늘 관리자점검으로 등록된 실적입니다.',attend:'오늘 책임입회로 등록된 실적이며 보고용 텍스트를 바로 복사할 수 있습니다.'};
+  setText('dailyDetailTitle',titles[category]);setText('dailyDetailSub',subs[category]);
+  state.dailyRows=(state.dailyData&&state.dailyData[category])||[];
+  renderDailyTable(category,state.dailyRows);
+  if(scroll)document.getElementById('dailyTable')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function teamReportName(team){
+  if(String(team).includes('강서'))return '강서선로팀';
+  if(String(team).includes('목동'))return '목동선로팀';
+  if(String(team).includes('영등포'))return '영등포선로팀';
+  return String(team||'-');
+}
+function gradeReportName(grade){return grade==='A'?'A급':grade==='B'?'B급':grade==='C'?'C급':grade||'-';}
+function makeTextSummary(row){
+  return `- [${teamReportName(row.team)}] ${row.id} ${row.name} ${gradeReportName(row.grade)}`;
+}
+function rowCheckInfo(row,category){
+  if(category==='missing')return {type:'미실시',person:'-',time:'-'};
+  const list=row.siteChecks||[];
+  const types=[...new Set(list.map(c=>c.type))].join(' · ')||'-';
+  const people=[...new Set(list.map(c=>c.person).filter(Boolean))].join(', ')||'-';
+  const times=list.map(c=>c.date).filter(Boolean).sort((a,b)=>a-b).map(d=>d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}));
+  return {type:types,person:people,time:times[0]||'-'};
+}
+function renderDailyTable(category,rows){
+  const table=document.getElementById('dailyTable');
+  if(!table)return;
+  if(!rows.length){table.innerHTML='<tbody><tr><td class="empty-state">해당되는 공사장이 없습니다.</td></tr></tbody>';return;}
+  table.innerHTML=`<thead><tr><th>팀</th><th>관리번호</th><th>공사장명</th><th>등급</th><th>점검유형</th><th>점검자</th><th>시간</th><th>텍스트 요약</th><th>복사</th></tr></thead><tbody>${
+    rows.map((r,i)=>{
+      const info=rowCheckInfo(r,category),summary=makeTextSummary(r);
+      return `<tr><td>${escapeHtml(simpleTeam(r.team))}</td><td>${escapeHtml(r.id)}</td><td><b>${escapeHtml(r.name)}</b></td><td>${escapeHtml(gradeReportName(r.grade))}</td><td>${escapeHtml(info.type)}</td><td>${escapeHtml(info.person)}</td><td>${escapeHtml(info.time)}</td><td class="summary-cell"><div class="summary-text">${escapeHtml(summary)}</div></td><td><button class="row-copy" onclick="copyText(decodeURIComponent('${encodeURIComponent(summary)}'))">복사</button></td></tr>`;
+    }).join('')
+  }</tbody>`;
+}
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text);toast('텍스트를 복사했습니다.');}
+  catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('텍스트를 복사했습니다.');}
+}
+function copyDailySummary(){
+  const text=(state.dailyRows||[]).map(makeTextSummary).join('\n');
+  if(!text){toast('복사할 목록이 없습니다.');return;}
+  copyText(text);
+}
+function downloadDailyCsv(){
+  const rows=state.dailyRows||[];
+  if(!rows.length){toast('저장할 목록이 없습니다.');return;}
+  const category=state.dailyCategory;
+  const data=[['팀','관리번호','공사장명','등급','점검유형','점검자','시간','텍스트요약']];
+  rows.forEach(r=>{const info=rowCheckInfo(r,category);data.push([simpleTeam(r.team),r.id,r.name,gradeReportName(r.grade),info.type,info.person,info.time,makeTextSummary(r)]);});
+  const csv='\ufeff'+data.map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`BBITT_${startDate.value}_${category}.csv`;a.click();URL.revokeObjectURL(a.href);
+}
+function trendStorageKey(){return 'bbittlab-trend-history-v4';}
+function getTrendHistory(){try{return JSON.parse(localStorage.getItem(trendStorageKey())||'[]')}catch(e){return []}}
+function saveTrendSnapshot(snapshot){
+  let history=getTrendHistory();
+  const key=`${snapshot.date}|${snapshot.team}|${snapshot.mode}`;
+  history=history.filter(x=>`${x.date}|${x.team}|${x.mode}`!==key);
+  history.push(snapshot);history=history.slice(-120);
+  localStorage.setItem(trendStorageKey(),JSON.stringify(history));
+}
+function clearTrendHistory(){localStorage.removeItem(trendStorageKey());toast('저장된 추세 비교 기록을 초기화했습니다.');renderAll();}
+function renderTrendCards(arr,checks,rate,daily){
+  const current={date:endDate.value,team:state.team||'전체',mode:daily?'daily':'period',rate,bad:daily?arr.filter(r=>!(r.checks||[]).length).length:arr.filter(r=>!r.good).length,admin:checks.filter(c=>c.type==='관리자점검').length,attend:checks.filter(c=>c.type==='입회').length};
+  const history=getTrendHistory().filter(x=>x.team===current.team&&x.mode===current.mode&&x.date<current.date).sort((a,b)=>b.date.localeCompare(a.date));
+  const prev=history[0];
+  updateTrendMetric('Rate',current.rate,prev?.rate,'%',true);
+  updateTrendMetric('Bad',current.bad,prev?.bad,'건',false,true);
+  updateTrendMetric('Admin',current.admin,prev?.admin,'건',true);
+  updateTrendMetric('Attend',current.attend,prev?.attend,'건',true);
+  const caption=document.getElementById('trendCaption');
+  if(caption)caption.textContent=prev?`${prev.date} 저장 결과와 비교합니다.`:'비교 기준이 없습니다. 분석 결과가 날짜별로 자동 저장됩니다.';
+  saveTrendSnapshot(current);
+}
+function updateTrendMetric(name,current,previous,suffix,positiveUp=true,inverse=false){
+  setText('trend'+name,String(current)+(suffix==='%'?'%':''));
+  const deltaEl=document.getElementById('trend'+name+'Delta');
+  const bar=document.getElementById('trend'+name+'Bar');
+  if(bar)bar.style.width=Math.max(3,Math.min(100,name==='Rate'?current:(current/Math.max(1,current,previous||0))*100))+'%';
+  if(!deltaEl)return;
+  deltaEl.className='trend-delta flat';
+  if(previous===undefined){deltaEl.textContent='기준 없음';return;}
+  const diff=current-previous;
+  if(diff===0){deltaEl.textContent='변동 없음';return;}
+  const favorable=inverse?diff<0:(positiveUp?diff>0:diff<0);
+  deltaEl.className='trend-delta '+(favorable?'up':'down');
+  deltaEl.textContent=`${diff>0?'▲ +':'▼ '}${Math.abs(diff)}${suffix}`;
+}
 </script>
 </body>
 </html>
