@@ -456,7 +456,7 @@ body.dark .summary-text{color:#c4cedd}
 
 /* ===== BBITT LAB V5 · Multi Page Operations ===== */
 .v5-page{display:none}.v5-page.active{display:block;animation:fadeUp .28s ease both}
-body.v5-alt .main> :not(.topbar):not(.top-command):not(.v5-page){display:none!important}
+body.v5-alt .main> :not(.topbar):not(.top-command):not(.v5-page):not(.v5-drawer):not(.v5-drawer-backdrop){display:none!important}
 body.v5-alt.manager-mode .regular-only,body.v5-alt.manager-mode .manager-only{display:none!important}
 .v5-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
 .v5-page-title{font-size:24px;font-weight:950;letter-spacing:-.035em}.v5-page-copy{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.55}
@@ -475,6 +475,24 @@ body.v5-alt.manager-mode .regular-only,body.v5-alt.manager-mode .manager-only{di
 body.dark .v5-filterbar input,body.dark .v5-filterbar select,body.dark .v5-manager-tab,body.dark .v5-drawer{background:var(--surface);color:var(--ink);border-color:var(--line)}
 @media(max-width:1100px){.v5-grid-4,.v5-grid-5{grid-template-columns:repeat(2,1fr)}.v5-manager-layout{grid-template-columns:1fr}.v5-filterbar{grid-template-columns:1fr 1fr 1fr}}
 @media(max-width:650px){.v5-grid-4,.v5-grid-5,.v5-filterbar{grid-template-columns:1fr}.v5-week-summary{grid-template-columns:repeat(5,minmax(48px,1fr));overflow:auto}.v5-page-head{flex-direction:column}}
+
+/* ===== FINAL V6 · Independent page detail architecture ===== */
+.v6-staff-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);gap:12px;align-items:start}
+.v6-staff-detail{position:sticky;top:12px;min-height:520px}
+.v6-detail-empty{min-height:450px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:24px}
+.v6-person-head{display:flex;align-items:center;gap:12px;padding-bottom:13px;border-bottom:1px solid var(--line);margin-bottom:13px}
+.v6-avatar{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#3973f6,#7f56d9);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:950;box-shadow:0 10px 24px rgba(57,115,246,.2)}
+.v6-person-name{font-size:18px;font-weight:950}.v6-person-meta{font-size:10px;color:var(--muted);margin-top:4px}
+.v6-mini-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px}
+.v6-mini-kpi{background:var(--surface2);border:1px solid var(--line);border-radius:13px;padding:10px}.v6-mini-kpi b{display:block;font-size:20px}.v6-mini-kpi span{font-size:9px;color:var(--muted)}
+.v6-staff-calendar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0 14px}.v6-staff-day{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:9px 5px;text-align:center}.v6-staff-day b{display:block;font-size:18px}.v6-staff-day span{font-size:9px;color:var(--muted)}
+.v6-detail-scroll{max-height:420px;overflow:auto;padding-right:4px}
+.v6-staff-row.selected td{background:#eaf1ff!important}.v6-staff-row{cursor:pointer}
+.v6-section-label{font-size:11px;font-weight:950;margin:14px 0 8px}
+.v6-site-chip{display:flex;justify-content:space-between;gap:8px;padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--surface2);margin-bottom:6px;font-size:10px}.v6-site-chip b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.dark .v6-mini-kpi,body.dark .v6-staff-day,body.dark .v6-site-chip{background:var(--surface2)}
+@media(max-width:1200px){.v6-staff-layout{grid-template-columns:1fr}.v6-staff-detail{position:relative;top:auto}}
+
 </style>
 </head>
 <body>
@@ -489,7 +507,7 @@ body.dark .v5-filterbar input,body.dark .v5-filterbar select,body.dark .v5-manag
 <a href="#" data-page="stats" onclick="switchV5Page('stats');return false"><span class="ico">📊</span>통계</a>
 <a href="#" data-page="manage" onclick="switchV5Page('manage');return false"><span class="ico">⚙</span>관리</a>
 </nav>
-<div class="side-card"><b>점검 대시보드 V5 · Drive</b><p>강서선로부 등록관리 공사장의 점검 충족 여부, 직원 실적, 관리자점검을 한 화면에서 분석합니다.</p></div>
+<div class="side-card"><b>점검 대시보드 FINAL V6 · Drive</b><p>강서선로부 등록관리 공사장의 점검 충족 여부, 직원 실적, 관리자점검을 한 화면에서 분석합니다.</p></div>
 </aside>
 <main class="main">
 <div class="topbar">
@@ -772,7 +790,10 @@ body.dark .v5-filterbar input,body.dark .v5-filterbar select,body.dark .v5-manag
   <div class="v5-page-head"><div><div class="v5-page-title">직원실적</div><div class="v5-page-copy">순회·책임입회 실적을 담당자별로 조회하고 공사장별 상세 이력을 확인합니다.</div></div></div>
   <div class="v5-filterbar"><input id="v5StaffSearch" placeholder="직원명 검색" oninput="renderV5Staff()"><select id="v5StaffTeam" onchange="renderV5Staff()"><option value="">전체 팀</option></select><select id="v5StaffType" onchange="renderV5Staff()"><option value="">전체 점검</option><option>순회</option><option>입회</option></select><select id="v5StaffSort" onchange="renderV5Staff()"><option value="total">합계순</option><option value="name">이름순</option></select><span></span><button class="btn" onclick="resetV5Filters('staff')">초기화</button></div>
   <div class="v5-grid-4"><div class="v5-metric"><div class="v5-metric-label">참여 직원</div><div class="v5-metric-value" id="v5StaffPeople">0</div></div><div class="v5-metric"><div class="v5-metric-label">순회</div><div class="v5-metric-value" id="v5StaffRound">0</div></div><div class="v5-metric"><div class="v5-metric-label">책임입회</div><div class="v5-metric-value" id="v5StaffAttend">0</div></div><div class="v5-metric"><div class="v5-metric-label">전체 실적</div><div class="v5-metric-value" id="v5StaffTotal">0</div></div></div>
-  <div class="v5-card"><div class="v5-card-head"><div><div class="v5-card-title">직원별 실적</div><div class="v5-card-sub">행을 클릭하면 해당 직원의 점검 공사장 이력을 확인합니다.</div></div></div><div class="table-wrap"><table class="data-table" id="v5StaffTable"></table></div></div>
+  <div class="v6-staff-layout">
+    <div class="v5-card"><div class="v5-card-head"><div><div class="v5-card-title">직원별 실적</div><div class="v5-card-sub">직원을 선택하면 같은 화면 오른쪽에 상세 실적이 즉시 표시됩니다.</div></div></div><div class="table-wrap" style="max-height:650px"><table class="data-table" id="v5StaffTable"></table></div></div>
+    <aside class="v5-card v6-staff-detail" id="v6StaffDetail"><div class="v6-detail-empty"><div><div style="font-size:34px;margin-bottom:10px">👷</div><b>직원을 선택해 주세요.</b><div style="font-size:10px;margin-top:6px">주간 실적, 담당 공사장, 월~금 점검일과 점검 이력을 확인할 수 있습니다.</div></div></div></aside>
+  </div>
 </section>
 <section class="v5-page" id="v5ManagerPage">
   <div class="v5-page-head"><div><div class="v5-page-title">직책자 점검실적</div><div class="v5-page-copy">센터장·부장은 전체 팀, 각 팀장은 본인 팀의 특급·A급 공사장을 월~금 중 1회 이상 점검해야 합니다.</div></div><button class="btn primary" onclick="showManagerMissingOnly()">남은 점검만 보기</button></div>
@@ -1392,13 +1413,29 @@ function renderV5ManagerDetail(){
 }
 function showManagerMissingOnly(){switchV5Page('manager');document.getElementById('v5ManagerMissOnly').checked=true;renderV5ManagerDetail();}
 function renderV5Staff(){
- let checks=filteredChecks().filter(c=>c.type!=='관리자점검');const q=(document.getElementById('v5StaffSearch')?.value||'').toLowerCase(),team=document.getElementById('v5StaffTeam')?.value||'',type=document.getElementById('v5StaffType')?.value||'';if(team)checks=checks.filter(c=>c.team===team);if(type)checks=checks.filter(c=>c.type===type);if(q)checks=checks.filter(c=>String(c.person).toLowerCase().includes(q));const map={};checks.forEach(c=>{const p=c.person||'미지정';map[p]??={name:p,round:0,attend:0,sites:new Set(),checks:[]};if(c.type==='순회')map[p].round++;if(c.type==='입회')map[p].attend++;map[p].sites.add(c.id);map[p].checks.push(c)});let rows=Object.values(map).map(x=>({...x,total:x.round+x.attend}));if(document.getElementById('v5StaffSort')?.value==='name')rows.sort((a,b)=>compareText(a.name,b.name));else rows.sort((a,b)=>b.total-a.total);setText('v5StaffPeople',rows.length);setText('v5StaffRound',checks.filter(c=>c.type==='순회').length);setText('v5StaffAttend',checks.filter(c=>c.type==='입회').length);setText('v5StaffTotal',checks.length);document.getElementById('v5StaffTable').innerHTML=`<thead><tr><th>직원</th><th>순회</th><th>책임입회</th><th>합계</th><th>점검 공사장</th><th>최근 점검</th></tr></thead><tbody>${rows.map(r=>`<tr class="v5-site-row" onclick="openV5StaffDrawer('${encodeURIComponent(r.name)}')"><td><b>${escapeHtml(r.name)}</b></td><td>${r.round}</td><td>${r.attend}</td><td><b>${r.total}</b></td><td>${r.sites.size}</td><td>${r.checks.length?toInputDate(r.checks.sort((a,b)=>b.date-a.date)[0].date):'-'}</td></tr>`).join('')}</tbody>`;
+ let checks=filteredChecks().filter(c=>c.type!=='관리자점검');const q=(document.getElementById('v5StaffSearch')?.value||'').toLowerCase(),team=document.getElementById('v5StaffTeam')?.value||'',type=document.getElementById('v5StaffType')?.value||'';if(team)checks=checks.filter(c=>c.team===team);if(type)checks=checks.filter(c=>c.type===type);if(q)checks=checks.filter(c=>String(c.person).toLowerCase().includes(q));const map={};checks.forEach(c=>{const p=c.person||'미지정';map[p]??={name:p,round:0,attend:0,sites:new Set(),checks:[]};if(c.type==='순회')map[p].round++;if(c.type==='입회')map[p].attend++;map[p].sites.add(c.id);map[p].checks.push(c)});let rows=Object.values(map).map(x=>({...x,total:x.round+x.attend}));if(document.getElementById('v5StaffSort')?.value==='name')rows.sort((a,b)=>compareText(a.name,b.name));else rows.sort((a,b)=>b.total-a.total);setText('v5StaffPeople',rows.length);setText('v5StaffRound',checks.filter(c=>c.type==='순회').length);setText('v5StaffAttend',checks.filter(c=>c.type==='입회').length);setText('v5StaffTotal',checks.length);document.getElementById('v5StaffTable').innerHTML=`<thead><tr><th>직원</th><th>순회</th><th>책임입회</th><th>합계</th><th>점검 공사장</th><th>최근 점검</th></tr></thead><tbody>${rows.map(r=>`<tr class="v5-site-row v6-staff-row ${state.v6SelectedStaff===r.name?'selected':''}" onclick="openV6StaffDetail('${encodeURIComponent(r.name)}')"><td><b>${escapeHtml(r.name)}</b></td><td>${r.round}</td><td>${r.attend}</td><td><b>${r.total}</b></td><td>${r.sites.size}</td><td>${r.checks.length?toInputDate(r.checks.sort((a,b)=>b.date-a.date)[0].date):'-'}</td></tr>`).join('')}</tbody>`;
 }
 function renderV5Sites(){let rows=state.results.slice();const q=(document.getElementById('v5SiteSearch')?.value||'').toLowerCase(),team=document.getElementById('v5SiteTeam')?.value||'',grade=document.getElementById('v5SiteGrade')?.value||'',judge=document.getElementById('v5SiteJudge')?.value||'';if(q)rows=rows.filter(r=>(r.name+r.id+r.address+r.manager).toLowerCase().includes(q));if(team)rows=rows.filter(r=>r.team===team);if(grade)rows=rows.filter(r=>r.grade===grade);if(judge==='good')rows=rows.filter(r=>r.good);if(judge==='bad')rows=rows.filter(r=>!r.good);if(judge==='zero')rows=rows.filter(r=>r.accepted===0);rows.sort((a,b)=>(gradeRank[a.grade]||9)-(gradeRank[b.grade]||9)||compareText(a.name,b.name));document.getElementById('v5SitesTable').innerHTML=`<thead><tr><th>팀</th><th>등급</th><th>공사장명</th><th>주소</th><th>담당자</th><th>인정/필요</th><th>최근 점검</th><th>상태</th></tr></thead><tbody>${rows.map(r=>`<tr class="v5-site-row" onclick="openV5SiteDrawer('${encodeURIComponent(r.id)}','')"><td>${escapeHtml(simpleTeam(r.team))}</td><td>${escapeHtml(r.grade==='A'?'A급':r.grade)}</td><td class="name-cell">${escapeHtml(r.name)}<div class="muted">${escapeHtml(r.id)}</div></td><td>${escapeHtml(r.address||'-')}</td><td>${escapeHtml(r.manager||'-')}</td><td><b>${r.accepted}</b> / ${r.required}</td><td>${r.lastDate?toInputDate(r.lastDate):'-'}</td><td><span class="badge ${r.good?'good':'bad'}">${r.good?'양호':'미흡'}</span></td></tr>`).join('')}</tbody>`;}
 function renderV5Stats(){const rows=state.results,good=rows.filter(r=>r.good).length,bad=rows.length-good,rate=rows.length?Math.round(good/rows.length*100):0,checks=filteredChecks();document.getElementById('v5StatsMetrics').innerHTML=`<div class="v5-metric"><div class="v5-metric-label">전체 공사장</div><div class="v5-metric-value">${rows.length}</div></div><div class="v5-metric"><div class="v5-metric-label">양호율</div><div class="v5-metric-value">${rate}%</div></div><div class="v5-metric"><div class="v5-metric-label">미흡</div><div class="v5-metric-value">${bad}</div></div><div class="v5-metric"><div class="v5-metric-label">전체 점검</div><div class="v5-metric-value">${checks.length}</div></div>`;document.getElementById('v5TeamStats').innerHTML='<thead><tr><th>팀</th><th>대상</th><th>양호</th><th>미흡</th><th>양호율</th></tr></thead><tbody>'+teamList.map(t=>{const a=rows.filter(r=>r.team===t),g=a.filter(r=>r.good).length;return `<tr><td>${simpleTeam(t)}</td><td>${a.length}</td><td>${g}</td><td>${a.length-g}</td><td>${a.length?Math.round(g/a.length*100):0}%</td></tr>`}).join('')+'</tbody>';const gs=['특급','A','B','C'];document.getElementById('v5GradeStats').innerHTML='<thead><tr><th>등급</th><th>대상</th><th>양호</th><th>미흡</th><th>양호율</th></tr></thead><tbody>'+gs.map(g=>{const a=rows.filter(r=>r.grade===g),ok=a.filter(r=>r.good).length;return `<tr><td>${g==='A'?'A급':g}</td><td>${a.length}</td><td>${ok}</td><td>${a.length-ok}</td><td>${a.length?Math.round(ok/a.length*100):0}%</td></tr>`}).join('')+'</tbody>';}
 function populateV5Filters(){const teams=[...new Set(state.sites.map(x=>x.team).filter(Boolean))].sort();['v5StaffTeam','v5SiteTeam'].forEach(id=>{const el=document.getElementById(id);if(!el)return;const cur=el.value;el.innerHTML='<option value="">전체 팀</option>'+teams.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(simpleTeam(t))}</option>`).join('');el.value=cur;});}
 function resetV5Filters(type){if(type==='staff'){['v5StaffSearch','v5StaffTeam','v5StaffType'].forEach(id=>document.getElementById(id).value='');renderV5Staff()}else{['v5SiteSearch','v5SiteTeam','v5SiteGrade','v5SiteJudge'].forEach(id=>document.getElementById(id).value='');renderV5Sites()}}
 function openV5SiteDrawer(siteIdEnc,managerEnc){const id=decodeURIComponent(siteIdEnc),managerName=managerEnc?decodeURIComponent(managerEnc):'';const site=state.sites.find(s=>String(s.id)===String(id));if(!site)return;let checks=state.checks.filter(c=>String(c.id)===String(id)).sort((a,b)=>b.date-a.date);if(managerName)checks=checks.filter(c=>c.type==='관리자점검'&&managerNameMatch(c.person,managerName));document.getElementById('v5DrawerTitle').textContent=site.name;document.getElementById('v5DrawerSub').textContent=`${simpleTeam(site.team)} · ${site.grade==='A'?'A급':site.grade} · ${site.id}`;document.getElementById('v5DrawerBody').innerHTML=`<div class="v5-card"><div class="v5-card-title">공사장 정보</div><div class="v5-card-sub" style="margin-top:8px;line-height:1.7">주소: ${escapeHtml(site.address||'-')}<br>담당자: ${escapeHtml(site.manager||'-')}<br>진행상태: ${escapeHtml(site.status||'-')}</div></div><div class="v5-card"><div class="v5-card-title">점검 타임라인</div><div class="v5-timeline">${checks.length?checks.map(c=>`<div class="v5-timeline-item"><div class="v5-timeline-time">${c.date.toLocaleString('ko-KR')}</div><div class="v5-timeline-title">${escapeHtml(c.person||'미지정')} · ${escapeHtml(c.type)}</div><div class="v5-timeline-note">${escapeHtml(c.note||c.memo||'등록된 메모 없음')}</div></div>`).join(''):'<div class="v5-empty">점검 이력이 없습니다.</div>'}</div></div><div class="v5-card"><div class="v5-card-title">점검 사진 / 메모</div><div class="v5-photo-grid"><div class="v5-photo-placeholder">사진 데이터 연동 영역<br>엑셀에 사진 링크가 있으면 추후 표시 가능</div><div class="v5-photo-placeholder">현장 메모 및 조치사항<br>${checks[0]?(escapeHtml(checks[0].note||checks[0].memo||'등록된 메모 없음')):'-'}</div></div></div>`;openV5Drawer();}
+function openV6StaffDetail(nameEnc){
+ const name=decodeURIComponent(nameEnc);state.v6SelectedStaff=name;
+ const checks=filteredChecks().filter(c=>c.person===name&&c.type!=='관리자점검').sort((a,b)=>b.date-a.date);
+ const round=checks.filter(c=>c.type==='순회').length,attend=checks.filter(c=>c.type==='입회').length;
+ const uniqueSites=[...new Set(checks.map(c=>String(c.id)))];
+ const weekdays=[0,0,0,0,0];checks.forEach(c=>{const i=dayIdx(c.date);if(i!==null)weekdays[i]++;});
+ const teams=[...new Set(checks.map(c=>simpleTeam(c.team)).filter(Boolean))];
+ const panel=document.getElementById('v6StaffDetail');if(!panel)return;
+ const initial=escapeHtml((name||'?').trim().charAt(0));
+ panel.innerHTML=`<div class="v6-person-head"><div class="v6-avatar">${initial}</div><div><div class="v6-person-name">${escapeHtml(name)}</div><div class="v6-person-meta">${escapeHtml(teams.join(' · ')||'소속팀 미확인')} · 이번 조회기간 기준</div></div></div>
+ <div class="v6-mini-kpis"><div class="v6-mini-kpi"><b>${round}</b><span>순회</span></div><div class="v6-mini-kpi"><b>${attend}</b><span>책임입회</span></div><div class="v6-mini-kpi"><b>${uniqueSites.length}</b><span>점검 공사장</span></div></div>
+ <div class="v6-section-label">월~금 점검 캘린더</div><div class="v6-staff-calendar">${['월','화','수','목','금'].map((d,i)=>`<div class="v6-staff-day"><b>${weekdays[i]}</b><span>${d}요일</span></div>`).join('')}</div>
+ <div class="v6-section-label">점검 공사장</div><div>${uniqueSites.slice(0,8).map(id=>{const site=state.sites.find(s=>String(s.id)===id);const count=checks.filter(c=>String(c.id)===id).length;return `<div class="v6-site-chip" onclick="openV5SiteDrawer('${encodeURIComponent(id)}','')"><b>${escapeHtml(site?.name||id)}</b><span>${count}회</span></div>`}).join('')||'<div class="v5-empty">점검 공사장이 없습니다.</div>'}</div>
+ <div class="v6-section-label">점검 이력</div><div class="v6-detail-scroll"><div class="v5-timeline">${checks.length?checks.map(c=>{const site=state.sites.find(s=>String(s.id)===String(c.id));return `<div class="v5-timeline-item"><div class="v5-timeline-time">${c.date.toLocaleString('ko-KR')}</div><div class="v5-timeline-title">${escapeHtml(c.type)} · ${escapeHtml(site?.name||c.id)}</div><div class="v5-timeline-note">${escapeHtml(simpleTeam(c.team))}${c.note||c.memo?' · '+escapeHtml(c.note||c.memo):''}</div></div>`}).join(''):'<div class="v5-empty">점검 이력이 없습니다.</div>'}</div></div>`;
+ renderV5Staff();
+}
 function openV5StaffDrawer(nameEnc){const name=decodeURIComponent(nameEnc),checks=state.checks.filter(c=>c.person===name&&c.type!=='관리자점검').sort((a,b)=>b.date-a.date);document.getElementById('v5DrawerTitle').textContent=name;document.getElementById('v5DrawerSub').textContent=`총 ${checks.length}건 점검`;document.getElementById('v5DrawerBody').innerHTML='<div class="v5-timeline">'+checks.map(c=>{const site=state.sites.find(s=>s.id===c.id);return `<div class="v5-timeline-item"><div class="v5-timeline-time">${c.date.toLocaleString('ko-KR')}</div><div class="v5-timeline-title">${escapeHtml(c.type)} · ${escapeHtml(site?.name||c.id)}</div><div class="v5-timeline-note">${escapeHtml(simpleTeam(c.team))}</div></div>`}).join('')+'</div>';openV5Drawer();}
 function openV5Drawer(){document.getElementById('v5Drawer').classList.add('open');document.getElementById('v5DrawerBackdrop').classList.add('open')}
 function closeV5Drawer(){document.getElementById('v5Drawer').classList.remove('open');document.getElementById('v5DrawerBackdrop').classList.remove('open')}
@@ -1406,10 +1443,10 @@ const _v5RenderAll=renderAll;renderAll=function(){_v5RenderAll();populateV5Filte
 
 window.addEventListener('DOMContentLoaded',()=>{
   try{
-    state.v5Page='dashboard';
+    state.v5Page='dashboard';state.v6SelectedStaff='';
     state.v5Manager=managers[0]?.name||'';
     switchV5Page('dashboard');
-  }catch(error){console.error('BBITT LAB V5 initialization failed:',error);}
+  }catch(error){console.error('BBITT LAB FINAL V6 initialization failed:',error);}
 });
 </script>
 </body>
