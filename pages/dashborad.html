@@ -4,8 +4,52 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>BBITT LAB V4 · 사외공사장 운영 대시보드</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<title>BBITT LAB V5 · 사외공사장 운영 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
+
+/* ===== BBITT LAB V5 Application Layer ===== */
+state.v5Page='dashboard'; state.v5Manager=managers[0]?.name||'';
+function switchV5Page(page){
+  state.v5Page=page;
+  document.body.classList.toggle('v5-alt',page!=='dashboard');
+  document.querySelectorAll('.v5-page').forEach(x=>x.classList.remove('active'));
+  const ids={staff:'v5StaffPage',manager:'v5ManagerPage',sites:'v5SitesPage',stats:'v5StatsPage',manage:'v5ManagePage'};
+  if(ids[page])document.getElementById(ids[page])?.classList.add('active');
+  document.querySelectorAll('#v5Nav a').forEach(a=>a.classList.toggle('active',a.dataset.page===page));
+  const titleMap={dashboard:['운영 현황 대시보드','관리자가 우선 확인해야 할 핵심 점검 현황입니다.'],staff:['직원실적','담당자별 순회·책임입회 실적을 확인합니다.'],manager:['직책자 점검실적','직책별 특급·A급 대상과 주간 점검 이력을 확인합니다.'],sites:['공사장목록','등록 공사장별 점검 상태와 상세 이력을 확인합니다.'],stats:['통계','팀·등급·직원·직책자 성과를 비교합니다.'],manage:['관리','데이터 업로드와 백업을 관리합니다.']};
+  const t=titleMap[page]||titleMap.dashboard; document.querySelector('.title').textContent=t[0];document.querySelector('.desc').textContent=t[1];
+  if(page==='staff')renderV5Staff(); if(page==='manager')renderV5Manager(); if(page==='sites')renderV5Sites(); if(page==='stats')renderV5Stats(); if(page==='manage'){const d=document.getElementById('dataManagement');if(d)d.style.display='block';}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function v5MatchedAdmin(){const valid=getValidSiteIdSet();return state.checks.filter(c=>c.type==='관리자점검'&&valid.has(String(c.id||'').trim()));}
+function v5ManagerDetails(m){const ac=v5MatchedAdmin();return ['특급','A'].flatMap(g=>managerTargetSites(m,g).map(site=>{const checks=uniqueManagerChecks(ac.filter(c=>managerNameMatch(c.person,m.name)&&String(c.id)===String(site.id))).sort((a,b)=>a.date-b.date);return {site,grade:g,checks,ok:checks.length>0,last:checks.at(-1)?.date||null};})).sort((a,b)=>Number(a.ok)-Number(b.ok)||(a.grade==='특급'?-1:1)||compareText(a.site.name,b.site.name));}
+function daysAgoText(d){if(!d)return '-';const n=Math.max(0,Math.floor((new Date()-d)/86400000));return n===0?'오늘':`${n}일 전`;}
+function renderV5Manager(){
+ const tabs=document.getElementById('v5ManagerTabs');tabs.innerHTML=managers.map(m=>`<button class="v5-manager-tab ${m.name===state.v5Manager?'active':''}" onclick="state.v5Manager='${m.name}';renderV5Manager()">${m.role}<br><small>${m.name}</small></button>`).join('');renderV5ManagerDetail();
+}
+function renderV5ManagerDetail(){
+ const m=managers.find(x=>x.name===state.v5Manager)||managers[0];if(!m)return;let details=v5ManagerDetails(m);const total=details.length,done=details.filter(x=>x.ok).length,remain=total-done,rate=total?Math.round(done/total*100):0;
+ document.getElementById('v5ManagerMetrics').innerHTML=`<div class="v5-metric"><div class="v5-metric-label">대상 공사장</div><div class="v5-metric-value">${total}</div><div class="v5-metric-note">특급·A급</div></div><div class="v5-metric"><div class="v5-metric-label">점검 완료</div><div class="v5-metric-value">${done}</div></div><div class="v5-metric"><div class="v5-metric-label">미점검</div><div class="v5-metric-value">${remain}</div></div><div class="v5-metric"><div class="v5-metric-label">완료율</div><div class="v5-metric-value">${rate}%</div><div class="v5-progress"><i style="width:${rate}%"></i></div></div><div class="v5-metric"><div class="v5-metric-label">실제 점검 횟수</div><div class="v5-metric-value">${details.reduce((a,b)=>a+b.checks.length,0)}</div></div>`;
+ const missOnly=document.getElementById('v5ManagerMissOnly')?.checked;if(missOnly)details=details.filter(x=>!x.ok);
+ const table=document.getElementById('v5ManagerTable');table.innerHTML=`<thead><tr><th>팀</th><th>등급</th><th>공사장</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>최종 점검</th><th>경과</th><th>상태</th></tr></thead><tbody>${details.map(d=>{const days=[0,0,0,0,0];d.checks.forEach(c=>{const i=dayIdx(c.date);if(i!==null)days[i]++;});return `<tr class="v5-site-row" onclick="openV5SiteDrawer('${encodeURIComponent(d.site.id)}','${encodeURIComponent(m.name)}')"><td>${escapeHtml(simpleTeam(d.site.team))}</td><td><span class="badge ${d.grade==='특급'?'warn':'info'}">${d.grade==='A'?'A급':d.grade}</span></td><td class="name-cell">${escapeHtml(d.site.name)}<div class="muted">${escapeHtml(d.site.id)}</div></td>${days.map(n=>`<td>${n?`<span class="badge good">${n}</span>`:'-'}</td>`).join('')}<td>${d.last?toInputDate(d.last):'-'}</td><td>${daysAgoText(d.last)}</td><td><span class="badge ${d.ok?'good':'bad'}">${d.ok?'완료':'미점검'}</span></td></tr>`}).join('')}</tbody>`;
+ const all=v5ManagerDetails(m),week=[0,0,0,0,0];all.flatMap(x=>x.checks).forEach(c=>{const i=dayIdx(c.date);if(i!==null)week[i]++;});document.getElementById('v5ManagerWeek').innerHTML=['월','화','수','목','금'].map((x,i)=>`<div class="v5-week-box"><b>${week[i]}</b><span>${x}요일</span></div>`).join('');
+ const friday=new Date().getDay()===5;document.getElementById('v5ManagerAlerts').innerHTML=remain===0?'<div class="v5-alert good">이번 주 대상 공사장을 모두 점검했습니다.</div>':`<div class="v5-alert ${friday?'danger':''}">${friday?'금요일 미점검 알림':'현재 남은 점검'}: <b>${remain}개</b><br>${m.role} 대상 공사장을 월~금 중 점검해 주세요.</div>`;
+ const priority=all.filter(x=>!x.ok).sort((a,b)=>(a.grade==='특급'?-1:1)-(b.grade==='특급'?-1:1)).slice(0,8);document.getElementById('v5ManagerPriority').innerHTML=priority.length?priority.map(x=>`<div class="action-row v5-site-row" onclick="openV5SiteDrawer('${encodeURIComponent(x.site.id)}','${encodeURIComponent(m.name)}')"><span class="action-dot ${x.grade==='특급'?'critical':'warning'}"></span><div><div class="action-name">${escapeHtml(shortSiteName(x.site.name))}</div><div class="action-meta">${simpleTeam(x.site.team)} · ${x.grade==='A'?'A급':x.grade}</div></div><span class="badge bad">미점검</span></div>`).join(''):'<div class="v5-alert good">우선 점검 대상이 없습니다.</div>';
+}
+function showManagerMissingOnly(){switchV5Page('manager');document.getElementById('v5ManagerMissOnly').checked=true;renderV5ManagerDetail();}
+function renderV5Staff(){
+ let checks=filteredChecks().filter(c=>c.type!=='관리자점검');const q=(document.getElementById('v5StaffSearch')?.value||'').toLowerCase(),team=document.getElementById('v5StaffTeam')?.value||'',type=document.getElementById('v5StaffType')?.value||'';if(team)checks=checks.filter(c=>c.team===team);if(type)checks=checks.filter(c=>c.type===type);if(q)checks=checks.filter(c=>String(c.person).toLowerCase().includes(q));const map={};checks.forEach(c=>{const p=c.person||'미지정';map[p]??={name:p,round:0,attend:0,sites:new Set(),checks:[]};if(c.type==='순회')map[p].round++;if(c.type==='입회')map[p].attend++;map[p].sites.add(c.id);map[p].checks.push(c)});let rows=Object.values(map).map(x=>({...x,total:x.round+x.attend}));if(document.getElementById('v5StaffSort')?.value==='name')rows.sort((a,b)=>compareText(a.name,b.name));else rows.sort((a,b)=>b.total-a.total);setText('v5StaffPeople',rows.length);setText('v5StaffRound',checks.filter(c=>c.type==='순회').length);setText('v5StaffAttend',checks.filter(c=>c.type==='입회').length);setText('v5StaffTotal',checks.length);document.getElementById('v5StaffTable').innerHTML=`<thead><tr><th>직원</th><th>순회</th><th>책임입회</th><th>합계</th><th>점검 공사장</th><th>최근 점검</th></tr></thead><tbody>${rows.map(r=>`<tr class="v5-site-row" onclick="openV5StaffDrawer('${encodeURIComponent(r.name)}')"><td><b>${escapeHtml(r.name)}</b></td><td>${r.round}</td><td>${r.attend}</td><td><b>${r.total}</b></td><td>${r.sites.size}</td><td>${r.checks.length?toInputDate(r.checks.sort((a,b)=>b.date-a.date)[0].date):'-'}</td></tr>`).join('')}</tbody>`;
+}
+function renderV5Sites(){let rows=state.results.slice();const q=(document.getElementById('v5SiteSearch')?.value||'').toLowerCase(),team=document.getElementById('v5SiteTeam')?.value||'',grade=document.getElementById('v5SiteGrade')?.value||'',judge=document.getElementById('v5SiteJudge')?.value||'';if(q)rows=rows.filter(r=>(r.name+r.id+r.address+r.manager).toLowerCase().includes(q));if(team)rows=rows.filter(r=>r.team===team);if(grade)rows=rows.filter(r=>r.grade===grade);if(judge==='good')rows=rows.filter(r=>r.good);if(judge==='bad')rows=rows.filter(r=>!r.good);if(judge==='zero')rows=rows.filter(r=>r.accepted===0);rows.sort((a,b)=>(gradeRank[a.grade]||9)-(gradeRank[b.grade]||9)||compareText(a.name,b.name));document.getElementById('v5SitesTable').innerHTML=`<thead><tr><th>팀</th><th>등급</th><th>공사장명</th><th>주소</th><th>담당자</th><th>인정/필요</th><th>최근 점검</th><th>상태</th></tr></thead><tbody>${rows.map(r=>`<tr class="v5-site-row" onclick="openV5SiteDrawer('${encodeURIComponent(r.id)}','')"><td>${escapeHtml(simpleTeam(r.team))}</td><td>${escapeHtml(r.grade==='A'?'A급':r.grade)}</td><td class="name-cell">${escapeHtml(r.name)}<div class="muted">${escapeHtml(r.id)}</div></td><td>${escapeHtml(r.address||'-')}</td><td>${escapeHtml(r.manager||'-')}</td><td><b>${r.accepted}</b> / ${r.required}</td><td>${r.lastDate?toInputDate(r.lastDate):'-'}</td><td><span class="badge ${r.good?'good':'bad'}">${r.good?'양호':'미흡'}</span></td></tr>`).join('')}</tbody>`;}
+function renderV5Stats(){const rows=state.results,good=rows.filter(r=>r.good).length,bad=rows.length-good,rate=rows.length?Math.round(good/rows.length*100):0,checks=filteredChecks();document.getElementById('v5StatsMetrics').innerHTML=`<div class="v5-metric"><div class="v5-metric-label">전체 공사장</div><div class="v5-metric-value">${rows.length}</div></div><div class="v5-metric"><div class="v5-metric-label">양호율</div><div class="v5-metric-value">${rate}%</div></div><div class="v5-metric"><div class="v5-metric-label">미흡</div><div class="v5-metric-value">${bad}</div></div><div class="v5-metric"><div class="v5-metric-label">전체 점검</div><div class="v5-metric-value">${checks.length}</div></div>`;document.getElementById('v5TeamStats').innerHTML='<thead><tr><th>팀</th><th>대상</th><th>양호</th><th>미흡</th><th>양호율</th></tr></thead><tbody>'+teamList.map(t=>{const a=rows.filter(r=>r.team===t),g=a.filter(r=>r.good).length;return `<tr><td>${simpleTeam(t)}</td><td>${a.length}</td><td>${g}</td><td>${a.length-g}</td><td>${a.length?Math.round(g/a.length*100):0}%</td></tr>`}).join('')+'</tbody>';const gs=['특급','A','B','C'];document.getElementById('v5GradeStats').innerHTML='<thead><tr><th>등급</th><th>대상</th><th>양호</th><th>미흡</th><th>양호율</th></tr></thead><tbody>'+gs.map(g=>{const a=rows.filter(r=>r.grade===g),ok=a.filter(r=>r.good).length;return `<tr><td>${g==='A'?'A급':g}</td><td>${a.length}</td><td>${ok}</td><td>${a.length-ok}</td><td>${a.length?Math.round(ok/a.length*100):0}%</td></tr>`}).join('')+'</tbody>';}
+function populateV5Filters(){const teams=[...new Set(state.sites.map(x=>x.team).filter(Boolean))].sort();['v5StaffTeam','v5SiteTeam'].forEach(id=>{const el=document.getElementById(id);if(!el)return;const cur=el.value;el.innerHTML='<option value="">전체 팀</option>'+teams.map(t=>`<option value="${escapeHtml(t)}">${escapeHtml(simpleTeam(t))}</option>`).join('');el.value=cur;});}
+function resetV5Filters(type){if(type==='staff'){['v5StaffSearch','v5StaffTeam','v5StaffType'].forEach(id=>document.getElementById(id).value='');renderV5Staff()}else{['v5SiteSearch','v5SiteTeam','v5SiteGrade','v5SiteJudge'].forEach(id=>document.getElementById(id).value='');renderV5Sites()}}
+function openV5SiteDrawer(siteIdEnc,managerEnc){const id=decodeURIComponent(siteIdEnc),managerName=managerEnc?decodeURIComponent(managerEnc):'';const site=state.sites.find(s=>String(s.id)===String(id));if(!site)return;let checks=state.checks.filter(c=>String(c.id)===String(id)).sort((a,b)=>b.date-a.date);if(managerName)checks=checks.filter(c=>c.type==='관리자점검'&&managerNameMatch(c.person,managerName));document.getElementById('v5DrawerTitle').textContent=site.name;document.getElementById('v5DrawerSub').textContent=`${simpleTeam(site.team)} · ${site.grade==='A'?'A급':site.grade} · ${site.id}`;document.getElementById('v5DrawerBody').innerHTML=`<div class="v5-card"><div class="v5-card-title">공사장 정보</div><div class="v5-card-sub" style="margin-top:8px;line-height:1.7">주소: ${escapeHtml(site.address||'-')}<br>담당자: ${escapeHtml(site.manager||'-')}<br>진행상태: ${escapeHtml(site.status||'-')}</div></div><div class="v5-card"><div class="v5-card-title">점검 타임라인</div><div class="v5-timeline">${checks.length?checks.map(c=>`<div class="v5-timeline-item"><div class="v5-timeline-time">${c.date.toLocaleString('ko-KR')}</div><div class="v5-timeline-title">${escapeHtml(c.person||'미지정')} · ${escapeHtml(c.type)}</div><div class="v5-timeline-note">${escapeHtml(c.note||c.memo||'등록된 메모 없음')}</div></div>`).join(''):'<div class="v5-empty">점검 이력이 없습니다.</div>'}</div></div><div class="v5-card"><div class="v5-card-title">점검 사진 / 메모</div><div class="v5-photo-grid"><div class="v5-photo-placeholder">사진 데이터 연동 영역<br>엑셀에 사진 링크가 있으면 추후 표시 가능</div><div class="v5-photo-placeholder">현장 메모 및 조치사항<br>${checks[0]?(escapeHtml(checks[0].note||checks[0].memo||'등록된 메모 없음')):'-'}</div></div></div>`;openV5Drawer();}
+function openV5StaffDrawer(nameEnc){const name=decodeURIComponent(nameEnc),checks=state.checks.filter(c=>c.person===name&&c.type!=='관리자점검').sort((a,b)=>b.date-a.date);document.getElementById('v5DrawerTitle').textContent=name;document.getElementById('v5DrawerSub').textContent=`총 ${checks.length}건 점검`;document.getElementById('v5DrawerBody').innerHTML='<div class="v5-timeline">'+checks.map(c=>{const site=state.sites.find(s=>s.id===c.id);return `<div class="v5-timeline-item"><div class="v5-timeline-time">${c.date.toLocaleString('ko-KR')}</div><div class="v5-timeline-title">${escapeHtml(c.type)} · ${escapeHtml(site?.name||c.id)}</div><div class="v5-timeline-note">${escapeHtml(simpleTeam(c.team))}</div></div>`}).join('')+'</div>';openV5Drawer();}
+function openV5Drawer(){document.getElementById('v5Drawer').classList.add('open');document.getElementById('v5DrawerBackdrop').classList.add('open')}
+function closeV5Drawer(){document.getElementById('v5Drawer').classList.remove('open');document.getElementById('v5DrawerBackdrop').classList.remove('open')}
+const _v5RenderAll=renderAll;renderAll=function(){_v5RenderAll();populateV5Filters();if(state.v5Page==='staff')renderV5Staff();if(state.v5Page==='manager')renderV5Manager();if(state.v5Page==='sites')renderV5Sites();if(state.v5Page==='stats')renderV5Stats();};
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
     :root{
@@ -453,21 +497,43 @@ body.dark .summary-text{color:#c4cedd}
   .daily-detail-toolbar{align-items:flex-start;flex-direction:column}
   .summary-cell{min-width:220px}
 }
+
+/* ===== BBITT LAB V5 · Multi Page Operations ===== */
+.v5-page{display:none}.v5-page.active{display:block;animation:fadeUp .28s ease both}
+body.v5-alt .main> :not(.topbar):not(.top-command):not(.v5-page){display:none!important}
+body.v5-alt.manager-mode .regular-only,body.v5-alt.manager-mode .manager-only{display:none!important}
+.v5-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.v5-page-title{font-size:24px;font-weight:950;letter-spacing:-.035em}.v5-page-copy{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.55}
+.v5-filterbar{display:grid;grid-template-columns:1.4fr repeat(4,1fr) auto;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin-bottom:12px}
+.v5-filterbar input,.v5-filterbar select{height:37px;border:1px solid var(--line);border-radius:10px;padding:0 11px;background:var(--surface);color:var(--ink);font-size:10.5px}
+.v5-grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}.v5-grid-5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.v5-metric{background:var(--surface);border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:var(--shadow)}.v5-metric-label{font-size:10px;color:var(--muted);font-weight:850}.v5-metric-value{font-size:28px;font-weight:950;margin-top:6px}.v5-metric-note{font-size:9px;color:var(--muted);margin-top:4px}
+.v5-progress{height:8px;background:#e9eef6;border-radius:999px;overflow:hidden;margin-top:9px}.v5-progress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3973f6,#7f56d9)}
+.v5-manager-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.v5-manager-tab{padding:9px 13px;border-radius:11px;background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:10.5px;font-weight:900}.v5-manager-tab.active{background:#17223b;color:#fff;border-color:#17223b}
+.v5-manager-layout{display:grid;grid-template-columns:1.5fr .7fr;gap:12px}.v5-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:var(--shadow);margin-bottom:12px}.v5-card-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.v5-card-title{font-size:14px;font-weight:950}.v5-card-sub{font-size:9.5px;color:var(--muted);margin-top:3px}
+.v5-week-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.v5-week-box{padding:11px 8px;border-radius:13px;background:var(--surface2);border:1px solid var(--line);text-align:center}.v5-week-box b{display:block;font-size:20px}.v5-week-box span{font-size:9px;color:var(--muted)}
+.v5-alert{padding:12px 13px;border-radius:14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:10.5px;line-height:1.5;margin-bottom:9px}.v5-alert.danger{background:#fff1f2;border-color:#fecdd3;color:#be123c}.v5-alert.good{background:#ecfdf3;border-color:#bbf7d0;color:#047857}
+.v5-site-row{cursor:pointer}.v5-site-row:hover td{background:#eef4ff!important}.v5-empty{padding:28px;text-align:center;color:var(--muted)}
+.v5-drawer{position:fixed;right:0;top:0;width:min(480px,94vw);height:100vh;background:var(--surface);border-left:1px solid var(--line);box-shadow:-18px 0 50px rgba(16,24,40,.18);z-index:120;transform:translateX(105%);transition:.25s ease;overflow:auto;padding:20px}.v5-drawer.open{transform:none}.v5-drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.35);z-index:119;display:none}.v5-drawer-backdrop.open{display:block}.v5-drawer-close{width:36px;height:36px;border-radius:10px;background:var(--surface2);color:var(--ink);font-weight:950}.v5-timeline{position:relative;margin-top:14px;padding-left:20px}.v5-timeline:before{content:"";position:absolute;left:6px;top:5px;bottom:5px;width:2px;background:var(--line)}.v5-timeline-item{position:relative;padding:0 0 16px 10px}.v5-timeline-item:before{content:"";position:absolute;left:-18px;top:4px;width:10px;height:10px;border-radius:50%;background:#3973f6;box-shadow:0 0 0 4px #eaf1ff}.v5-timeline-time{font-size:9.5px;color:var(--muted)}.v5-timeline-title{font-size:11px;font-weight:900;margin-top:2px}.v5-timeline-note{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.45}
+.v5-photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.v5-photo-placeholder{min-height:96px;border:1px dashed #cbd5e1;border-radius:13px;background:var(--surface2);display:grid;place-items:center;text-align:center;color:var(--muted);font-size:9.5px;padding:10px}
+body.dark .v5-filterbar input,body.dark .v5-filterbar select,body.dark .v5-manager-tab,body.dark .v5-drawer{background:var(--surface);color:var(--ink);border-color:var(--line)}
+@media(max-width:1100px){.v5-grid-4,.v5-grid-5{grid-template-columns:repeat(2,1fr)}.v5-manager-layout{grid-template-columns:1fr}.v5-filterbar{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:650px){.v5-grid-4,.v5-grid-5,.v5-filterbar{grid-template-columns:1fr}.v5-week-summary{grid-template-columns:repeat(5,minmax(48px,1fr));overflow:auto}.v5-page-head{flex-direction:column}}
 </style>
 </head>
 <body>
 <div class="shell">
 <aside class="sidebar">
 <div class="brand"><div class="brand-logo">B</div><div><div class="brand-title">BBITT <span>LAB</span></div><div class="brand-sub">Work Portal Professional</div></div></div>
-<nav class="nav">
-<a href="../index.html"><span class="ico">🏠</span>Home</a>
-<a class="active" href="#overview"><span class="ico">🏗</span>사외공사장</a>
-<a href="maps.html"><span class="ico">🗺</span>Maps</a>
-<a href="#overview"><span class="ico">📊</span>Dashboard</a>
-<a href="#"><span class="ico">📞</span>Contacts</a>
-<a href="#dataManagement"><span class="ico">⚙</span>Settings</a>
+<nav class="nav" id="v5Nav">
+<a class="active" href="#" data-page="dashboard" onclick="switchV5Page('dashboard');return false"><span class="ico">🏠</span>대시보드</a>
+<a href="#" data-page="staff" onclick="switchV5Page('staff');return false"><span class="ico">👷</span>직원실적</a>
+<a href="#" data-page="manager" onclick="switchV5Page('manager');return false"><span class="ico">👔</span>직책자 점검실적</a>
+<a href="#" data-page="sites" onclick="switchV5Page('sites');return false"><span class="ico">🚧</span>공사장목록</a>
+<a href="#" data-page="stats" onclick="switchV5Page('stats');return false"><span class="ico">📊</span>통계</a>
+<a href="#" data-page="manage" onclick="switchV5Page('manage');return false"><span class="ico">⚙</span>관리</a>
 </nav>
-<div class="side-card"><b>점검 대시보드 v3.0 · Drive</b><p>강서선로부 등록관리 공사장의 점검 충족 여부, 직원 실적, 관리자점검을 한 화면에서 분석합니다.</p></div>
+<div class="side-card"><b>점검 대시보드 V5 · Drive</b><p>강서선로부 등록관리 공사장의 점검 충족 여부, 직원 실적, 관리자점검을 한 화면에서 분석합니다.</p></div>
 </aside>
 <main class="main">
 <div class="topbar">
@@ -745,7 +811,34 @@ body.dark .summary-text{color:#c4cedd}
 <div class="drive-stat"><div class="d-label">저장공간</div><div class="d-value" id="driveStorage" style="font-size:17px">확인 중</div><div class="storage-bar"><i id="storageBar"></i></div></div>
 </div>
 <div class="drive-status"><span class="db-badge" id="dbStatus">● IndexedDB 연결 중</span><span>개인 브라우저 저장 · 다른 PC와 자동 공유되지 않음 · 백업 권장</span></div>
-</section></div></details></main>
+</section></div></details>
+<section class="v5-page" id="v5StaffPage">
+  <div class="v5-page-head"><div><div class="v5-page-title">직원실적</div><div class="v5-page-copy">순회·책임입회 실적을 담당자별로 조회하고 공사장별 상세 이력을 확인합니다.</div></div></div>
+  <div class="v5-filterbar"><input id="v5StaffSearch" placeholder="직원명 검색" oninput="renderV5Staff()"><select id="v5StaffTeam" onchange="renderV5Staff()"><option value="">전체 팀</option></select><select id="v5StaffType" onchange="renderV5Staff()"><option value="">전체 점검</option><option>순회</option><option>입회</option></select><select id="v5StaffSort" onchange="renderV5Staff()"><option value="total">합계순</option><option value="name">이름순</option></select><span></span><button class="btn" onclick="resetV5Filters('staff')">초기화</button></div>
+  <div class="v5-grid-4"><div class="v5-metric"><div class="v5-metric-label">참여 직원</div><div class="v5-metric-value" id="v5StaffPeople">0</div></div><div class="v5-metric"><div class="v5-metric-label">순회</div><div class="v5-metric-value" id="v5StaffRound">0</div></div><div class="v5-metric"><div class="v5-metric-label">책임입회</div><div class="v5-metric-value" id="v5StaffAttend">0</div></div><div class="v5-metric"><div class="v5-metric-label">전체 실적</div><div class="v5-metric-value" id="v5StaffTotal">0</div></div></div>
+  <div class="v5-card"><div class="v5-card-head"><div><div class="v5-card-title">직원별 실적</div><div class="v5-card-sub">행을 클릭하면 해당 직원의 점검 공사장 이력을 확인합니다.</div></div></div><div class="table-wrap"><table class="data-table" id="v5StaffTable"></table></div></div>
+</section>
+<section class="v5-page" id="v5ManagerPage">
+  <div class="v5-page-head"><div><div class="v5-page-title">직책자 점검실적</div><div class="v5-page-copy">센터장·부장은 전체 팀, 각 팀장은 본인 팀의 특급·A급 공사장을 월~금 중 1회 이상 점검해야 합니다.</div></div><button class="btn primary" onclick="showManagerMissingOnly()">남은 점검만 보기</button></div>
+  <div class="v5-manager-tabs" id="v5ManagerTabs"></div>
+  <div class="v5-grid-5" id="v5ManagerMetrics"></div>
+  <div class="v5-manager-layout"><div>
+    <div class="v5-card"><div class="v5-card-head"><div><div class="v5-card-title">대상 공사장 및 요일별 점검 현황</div><div class="v5-card-sub">공사장을 클릭하면 직책자 점검 타임라인·메모·사진 영역이 열립니다.</div></div><label class="filter-check"><input type="checkbox" id="v5ManagerMissOnly" onchange="renderV5ManagerDetail()"> 미점검만</label></div><div class="table-wrap" style="max-height:560px"><table class="data-table" id="v5ManagerTable"></table></div></div>
+  </div><div>
+    <div class="v5-card"><div class="v5-card-title">월~금 점검 캘린더</div><div class="v5-card-sub">선택 직책자의 요일별 점검 건수</div><div class="v5-week-summary" id="v5ManagerWeek"></div></div>
+    <div class="v5-card"><div class="v5-card-title">이번 주 알림</div><div id="v5ManagerAlerts" style="margin-top:10px"></div></div>
+    <div class="v5-card"><div class="v5-card-title">우선 점검 대상</div><div class="v5-card-sub">특급 미점검을 먼저 표시합니다.</div><div id="v5ManagerPriority" style="margin-top:10px"></div></div>
+  </div></div>
+</section>
+<section class="v5-page" id="v5SitesPage">
+  <div class="v5-page-head"><div><div class="v5-page-title">공사장목록</div><div class="v5-page-copy">공사장 기본정보, 등급, 담당자, 점검 상태와 최근 점검일을 한 화면에서 조회합니다.</div></div></div>
+  <div class="v5-filterbar"><input id="v5SiteSearch" placeholder="공사명·관리번호·주소 검색" oninput="renderV5Sites()"><select id="v5SiteTeam" onchange="renderV5Sites()"><option value="">전체 팀</option></select><select id="v5SiteGrade" onchange="renderV5Sites()"><option value="">전체 등급</option><option>특급</option><option value="A">A급</option><option value="B">B급</option><option value="C">C급</option></select><select id="v5SiteJudge" onchange="renderV5Sites()"><option value="">전체 상태</option><option value="good">양호</option><option value="bad">미흡</option><option value="zero">미점검</option></select><span></span><button class="btn" onclick="resetV5Filters('sites')">초기화</button></div>
+  <div class="v5-card"><div class="table-wrap" style="max-height:650px"><table class="data-table" id="v5SitesTable"></table></div></div>
+</section>
+<section class="v5-page" id="v5StatsPage"><div class="v5-page-head"><div><div class="v5-page-title">통계</div><div class="v5-page-copy">팀·등급·직원·직책자 기준의 핵심 수치를 요약합니다.</div></div></div><div class="v5-grid-4" id="v5StatsMetrics"></div><div class="split-grid"><div class="v5-card"><div class="v5-card-title">팀별 현황</div><div class="table-wrap"><table class="data-table" id="v5TeamStats"></table></div></div><div class="v5-card"><div class="v5-card-title">등급별 현황</div><div class="table-wrap"><table class="data-table" id="v5GradeStats"></table></div></div></div></section>
+<section class="v5-page" id="v5ManagePage"><div class="v5-page-head"><div><div class="v5-page-title">관리</div><div class="v5-page-copy">엑셀 업로드, 백업, 복원 및 브라우저 저장 데이터 관리를 수행합니다.</div></div></div><div class="v5-card"><div class="v5-alert good">기존 데이터 관리 기능을 그대로 유지합니다. 아래 버튼을 누르면 업로드·백업 영역이 열립니다.</div><button class="btn primary" onclick="openDataManagement();document.getElementById('dataManagement').scrollIntoView({behavior:'smooth'})">데이터 관리 열기</button></div></section>
+<div class="v5-drawer-backdrop" id="v5DrawerBackdrop" onclick="closeV5Drawer()"></div><aside class="v5-drawer" id="v5Drawer"><div class="v5-card-head"><div><div class="v5-page-title" id="v5DrawerTitle">상세정보</div><div class="v5-page-copy" id="v5DrawerSub"></div></div><button class="v5-drawer-close" onclick="closeV5Drawer()">✕</button></div><div id="v5DrawerBody"></div></aside>
+</main>
 </div>
 <div class="toast" id="toast"></div>
 <script>
